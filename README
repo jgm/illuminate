@@ -5,3 +5,14 @@ highlighting long source files. illuminate is much faster (100 times
 faster in one test!). The downside is that you have to write your own
 lexers. But this is not actually all that difficult.
 
+To try this out:
+
+    cabal install
+    illuminate illuminate.hs
+
+Right now, illuminate can highlight haskell, literate haskell, cabal files,
+c, c++, c#, java, and css.
+
+Want to write a lexer for a language?
+Study the examples in Text/Highlight/Illuminate/*.x.
+
