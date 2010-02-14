@@ -1,0 +1,236 @@
+import Text.Highlighting.Illuminate.Token
+{-# LINE 1 "templates/wrappers.hs" #-}
+{-# LINE 1 "templates/wrappers.hs" #-}
+{-# LINE 1 "<built-in>" #-}
+{-# LINE 1 "<command line>" #-}
+{-# LINE 1 "templates/wrappers.hs" #-}
+-- -----------------------------------------------------------------------------
+-- Alex wrapper code.
+--
+-- This code is in the PUBLIC DOMAIN; you may copy it freely and use
+-- it for any purpose whatsoever.
+
+{-# LINE 18 "templates/wrappers.hs" #-}
+
+-- -----------------------------------------------------------------------------
+-- The input type
+
+
+type AlexInput = (AlexPosn,     -- current position,
+                  Char,         -- previous char
+                  String)       -- current input string
+
+alexInputPrevChar :: AlexInput -> Char
+alexInputPrevChar (p,c,s) = c
+
+alexGetChar :: AlexInput -> Maybe (Char,AlexInput)
+alexGetChar (p,c,[]) = Nothing
+alexGetChar (p,_,(c:s))  = let p' = alexMove p c in p' `seq`
+                                Just (c, (p', c, s))
+
+
+{-# LINE 51 "templates/wrappers.hs" #-}
+
+-- -----------------------------------------------------------------------------
+-- Token positions
+
+-- `Posn' records the location of a token in the input text.  It has three
+-- fields: the address (number of chacaters preceding the token), line number
+-- and column of a token within the file. `start_pos' gives the position of the
+-- start of the file and `eof_pos' a standard encoding for the end of file.
+-- `move_pos' calculates the new position after traversing a given character,
+-- assuming the usual eight character tab stops.
+
+
+data AlexPosn = AlexPn !Int !Int !Int
+        deriving (Eq,Show)
+
+alexStartPos :: AlexPosn
+alexStartPos = AlexPn 0 1 1
+
+alexMove :: AlexPosn -> Char -> AlexPosn
+alexMove (AlexPn a l c) '\t' = AlexPn (a+1)  l     (((c+7) `div` 8)*8+1)
+alexMove (AlexPn a l c) '\n' = AlexPn (a+1) (l+1)   1
+alexMove (AlexPn a l c) _    = AlexPn (a+1)  l     (c+1)
+
+
+-- -----------------------------------------------------------------------------
+-- Default monad
+
+
+data AlexState = AlexState {
+        alex_pos :: !AlexPosn,  -- position at current input location
+        alex_inp :: String,     -- the current input
+        alex_chr :: !Char,      -- the character before the input
+        alex_scd :: !Int        -- the current startcode
+
+      , alex_ust :: AlexUserState -- AlexUserState will be defined in the user program
+
+    }
+
+-- Compile with -funbox-strict-fields for best results!
+
+runAlex :: String -> Alex a -> Either String a
+runAlex input (Alex f) 
+   = case f (AlexState {alex_pos = alexStartPos,
+                        alex_inp = input,       
+                        alex_chr = '\n',
+
+                        alex_ust = alexInitUserState,
+
+                        alex_scd = 0}) of Left msg -> Left msg
+                                          Right ( _, a ) -> Right a
+
+newtype Alex a = Alex { unAlex :: AlexState -> Either String (AlexState, a) }
+
+instance Monad Alex where
+  m >>= k  = Alex $ \s -> case unAlex m s of 
+                                Left msg -> Left msg
+                                Right (s',a) -> unAlex (k a) s'
+  return a = Alex $ \s -> Right (s,a)
+
+alexGetInput :: Alex AlexInput
+alexGetInput
+ = Alex $ \s@AlexState{alex_pos=pos,alex_chr=c,alex_inp=inp} -> 
+        Right (s, (pos,c,inp))
+
+alexSetInput :: AlexInput -> Alex ()
+alexSetInput (pos,c,inp)
+ = Alex $ \s -> case s{alex_pos=pos,alex_chr=c,alex_inp=inp} of
+                  s@(AlexState{}) -> Right (s, ())
+
+alexError :: String -> Alex a
+alexError message = Alex $ \s -> Left message
+
+alexGetStartCode :: Alex Int
+alexGetStartCode = Alex $ \s@AlexState{alex_scd=sc} -> Right (s, sc)
+
+alexSetStartCode :: Int -> Alex ()
+alexSetStartCode sc = Alex $ \s -> Right (s{alex_scd=sc}, ())
+
+alexMonadScan = do
+  inp <- alexGetInput
+  sc <- alexGetStartCode
+  case alexScan inp sc of
+    AlexEOF -> alexEOF
+    AlexError inp' -> alexError "lexical error"
+    AlexSkip  inp' len -> do
+        alexSetInput inp'
+        alexMonadScan
+    AlexToken inp' len action -> do
+        alexSetInput inp'
+        action inp len
+
+-- -----------------------------------------------------------------------------
+-- Useful token actions
+
+type AlexAction result = AlexInput -> Int -> result
+
+-- just ignore this token and scan another one
+-- skip :: AlexAction result
+skip input len = alexMonadScan
+
+-- ignore this token, but set the start code to a new value
+-- begin :: Int -> AlexAction result
+begin code input len = do alexSetStartCode code; alexMonadScan
+
+-- perform an action for this token, and set the start code to a new value
+-- andBegin :: AlexAction result -> Int -> AlexAction result
+(action `andBegin` code) input len = do alexSetStartCode code; action input len
+
+-- token :: (String -> Int -> token) -> AlexAction token
+token t input len = return (t input len)
+
+
+
+-- -----------------------------------------------------------------------------
+-- Monad (with ByteString input)
+
+{-# LINE 251 "templates/wrappers.hs" #-}
+
+
+-- -----------------------------------------------------------------------------
+-- Basic wrapper
+
+{-# LINE 273 "templates/wrappers.hs" #-}
+
+
+-- -----------------------------------------------------------------------------
+-- Basic wrapper, ByteString version
+
+{-# LINE 297 "templates/wrappers.hs" #-}
+
+{-# LINE 322 "templates/wrappers.hs" #-}
+
+
+-- -----------------------------------------------------------------------------
+-- Posn wrapper
+
+-- Adds text positions to the basic model.
+
+{-# LINE 339 "templates/wrappers.hs" #-}
+
+
+-- -----------------------------------------------------------------------------
+-- Posn wrapper, ByteString version
+
+{-# LINE 354 "templates/wrappers.hs" #-}
+
+
+-- -----------------------------------------------------------------------------
+-- GScan wrapper
+
+-- For compatibility with previous versions of Alex, and because we can.
+
+-- -----------------------------------------------------------------------------
+-- Custom code for highlighting
+
+alexEOF = return (EOF,"")
+
+type AlexUserState = [(Int,TokenType)]  -- a stack of codes and default token types
+
+alexInitUserState = [(0,Plain)]
+
+tok :: TokenType -> AlexInput -> Int -> Alex Token
+tok t (_,_,s) len = return (t, take len s)
+
+getUserState :: Alex AlexUserState
+getUserState = Alex $ \s@AlexState{alex_ust=ust} -> Right (s, ust)
+
+setUserState :: AlexUserState -> Alex ()
+setUserState newstate = Alex $ \s -> Right (s{alex_ust=newstate}, ())
+
+modifyUserState :: (AlexUserState -> AlexUserState) -> Alex ()
+modifyUserState fn = Alex $ \s@AlexState{alex_ust=ust} -> Right (s{alex_ust = fn ust}, ())
+
+plain :: AlexInput -> Int -> Alex Token
+plain (_,_,s) len = do
+  ((_,defaultToken) : _) <- getUserState
+  return (defaultToken, take len s)
+
+pushContext :: (Int, TokenType) -> Alex ()
+pushContext newcontext = do
+  modifyUserState (newcontext :)
+  alexSetStartCode $ fst newcontext
+
+popContext :: Alex (Int, TokenType)
+popContext = do
+  contexts <- getUserState
+  case contexts of
+       []      -> error "Empty contexts stack!"
+       [x]     -> return x
+       (x:y:xs) -> do
+           setUserState (y:xs)
+           alexSetStartCode $ fst y
+           return y
+
+(==>) :: Alex b -> (AlexInput -> Int -> Alex a) -> (AlexInput -> Int -> Alex a)
+(act1 ==> act2) inp len = act1 >> act2 inp len
+
+scanner :: String -> Either String [Token]
+scanner str = runAlex str $ do
+  let loop acc = do tok <- alexMonadScan
+                    if tok == (EOF,"")
+                       then return $ reverse acc
+                       else let acc' = tok : acc in loop acc'
+  loop []

@@ -1,0 +1,47 @@
+add other languages
+  x haskell
+  x css
+  x c
+  x cpp
+  x csharp
+  x cabal
+  x lhs
+  x java
+
+  _ alex
+  _ GNU Make
+
+  _ latex
+  _ xml
+  _ html
+  _ javascript
+  _ sql
+
+  _ ruby
+  _ erb
+  _ perl
+  _ python
+  _ lua
+  _ php
+  _ assembly
+  _ clojure
+  _ commonlisp
+  _ d
+  _ erlang
+  _ fortran
+  _ llvm
+  _ objectivec
+  _ ocaml
+  _ smalltalk
+  _ prolog
+  _ scala
+  _ tcl
+  _ vb
+  _ bash
+  _ awk
+  _ diff
+  _ yaml
+  _ xlst
+  _ scheme
+_ figure out way to reuse code sections?
+

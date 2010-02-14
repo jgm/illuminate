@@ -1,0 +1,63 @@
+Name:                illuminate
+Version:             0.1
+Cabal-Version:       >= 1.2
+Build-Type:          Custom
+Category:            Text
+Synopsis:            Syntax highlighting
+Description:         A fast syntax highlighting library using alex-produced lexers.
+
+License:             BSD3
+License-file:        LICENSE
+Author:              John MacFarlane
+Maintainer:          jgm@berkeley.edu
+Extra-Source-Files:  default.css
+                     Text/Highlighting/Illuminate/C.x
+                     Text/Highlighting/Illuminate/Cabal.x
+                     Text/Highlighting/Illuminate/CPlusPlus.x
+                     Text/Highlighting/Illuminate/CSharp.x
+                     Text/Highlighting/Illuminate/CSS.x
+                     Text/Highlighting/Illuminate/Haskell.x
+                     Text/Highlighting/Illuminate/Java.x
+                     Text/Highlighting/Illuminate/LiterateHaskell.x
+                     alex/AlexWrapper-illuminate
+                     alex/AlexTemplate-ghc
+
+Flag executable
+  Description:       Build the executable.
+  Default:           True
+
+Library
+  Build-Depends:     base >= 3 && < 5, containers, xhtml, utf8-string, hscolour
+  Build-Tools:       alex >= 2 && < 3
+  Exposed-Modules:   Text.Highlighting.Illuminate
+                     Text.Highlighting.Illuminate.Token
+                     Text.Highlighting.Illuminate.C
+                     Text.Highlighting.Illuminate.Cabal
+                     Text.Highlighting.Illuminate.CPlusPlus
+                     Text.Highlighting.Illuminate.CSharp
+                     Text.Highlighting.Illuminate.CSS
+                     Text.Highlighting.Illuminate.Haskell
+                     Text.Highlighting.Illuminate.Java
+                     Text.Highlighting.Illuminate.LiterateHaskell
+  Ghc-Options:       -Wall
+  Ghc-Prof-Options:  -auto-all -caf-all -O0
+
+Executable illuminate
+  Main-Is:           illuminate.hs
+  Build-depends:     base >= 3 && <5, array, containers, xhtml, filepath
+  Other-modules:     Text.Highlighting.Illuminate.C
+                     Text.Highlighting.Illuminate.Cabal
+                     Text.Highlighting.Illuminate.CPlusPlus
+                     Text.Highlighting.Illuminate.CSharp
+                     Text.Highlighting.Illuminate.CSS
+                     Text.Highlighting.Illuminate.Haskell
+                     Text.Highlighting.Illuminate.Java
+                     Text.Highlighting.Illuminate.LiterateHaskell
+  Build-Tools:       alex >= 2 && < 3
+  Ghc-Options:       -Wall
+  Ghc-Prof-Options: -auto-all -caf-all -O0
+  if flag(executable)
+    Buildable:      True
+  else
+    Buildable:      False
+
