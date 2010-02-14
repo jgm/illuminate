@@ -39,7 +39,7 @@ Library
                      Text.Highlighting.Illuminate.Haskell
                      Text.Highlighting.Illuminate.Java
                      Text.Highlighting.Illuminate.LiterateHaskell
-  Ghc-Options:       -Wall
+  Ghc-Options:       -Wall -funbox-strict-fields
   Ghc-Prof-Options:  -auto-all -caf-all -O0
 
 Executable illuminate
@@ -54,7 +54,7 @@ Executable illuminate
                      Text.Highlighting.Illuminate.Java
                      Text.Highlighting.Illuminate.LiterateHaskell
   Build-Tools:       alex >= 2 && < 3
-  Ghc-Options:       -Wall
+  Ghc-Options:       -Wall -funbox-strict-fields
   Ghc-Prof-Options: -auto-all -caf-all -O0
   if flag(executable)
     Buildable:      True
