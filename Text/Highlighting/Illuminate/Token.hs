@@ -1,7 +1,8 @@
 {-# LANGUAGE FlexibleInstances, TypeSynonymInstances #-}
-module Text.Highlighting.Illuminate.Token (Token, TokenType(..), asANSI, asHtmlCSS, defaultCSS) where
+module Text.Highlighting.Illuminate.Token (Token, Tokens, TokenType(..), asANSI, asHtmlCSS, defaultCSS) where
 import Language.Haskell.HsColour.ANSI (highlight, Highlight(..), Colour(..))
-import Data.List (groupBy)
+import Data.Sequence (Seq, empty, (<|))
+import qualified Data.Foldable as F
 import Text.XHtml
 
 data TokenType =
@@ -29,8 +30,20 @@ data TokenType =
 
 type Token = (TokenType, String)
 
-asANSI :: [Token] -> String
-asANSI = concatMap go . consolidate 
+type Tokens = Seq Token
+
+consolidate :: Tokens -> Tokens
+consolidate = collapse . F.foldr go (empty, Nothing)
+  where go (curtype, str) (accum, Nothing) = (accum, Just (curtype, [str]))
+        go (curtype, str) (accum, Just (t,xs)) | curtype == t =
+               (accum, Just (curtype, str:xs))
+        go (curtype, str) (accum, Just (t,xs)) =
+               (collapse (accum, Just (t,xs)), Just (curtype, [str])) 
+        collapse (accum, Nothing) = accum
+        collapse (accum, Just (t,xs)) = (t, concat xs) <| accum
+
+asANSI :: Tokens -> String
+asANSI = F.concatMap go . consolidate
  where
   go (Keyword, s) = highlight [Foreground Green, Underscore] s
   go (Symbol, s)  = highlight [Foreground Red] s
@@ -51,17 +64,11 @@ asANSI = concatMap go . consolidate
   go (Alert, s)   = highlight [Background Cyan] s
   go (_, s)       = s
 
-asHtmlCSS :: [Token] -> [Html]
-asHtmlCSS = map go . consolidate
+asHtmlCSS :: Tokens -> [Html]
+asHtmlCSS = F.toList . fmap go . consolidate
   where go (Whitespace, s) = stringToHtml s
         go (Plain, s) = stringToHtml s
         go (x, s) = thespan ! [theclass $ show x] << s
-
-consolidate :: [Token] -> [Token]
-consolidate = map mash . groupBy sameToken
-  where mash ((x,y):zs) = (x, concat $ y : map snd zs)
-        mash [] = undefined
-        sameToken (x,_) (y,_) = x == y
 
 defaultCSS :: String
 defaultCSS =

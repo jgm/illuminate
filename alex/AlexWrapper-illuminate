@@ -1,4 +1,5 @@
 import Text.Highlighting.Illuminate.Token
+import Data.Sequence (Seq, (><), singleton, viewl, ViewL(..), empty)
 {-# LINE 1 "templates/wrappers.hs" #-}
 {-# LINE 1 "templates/wrappers.hs" #-}
 {-# LINE 1 "<built-in>" #-}
@@ -185,14 +186,14 @@ token t input len = return (t input len)
 -- -----------------------------------------------------------------------------
 -- Custom code for highlighting
 
-alexEOF = return (EOF,"")
+alexEOF = return $ singleton (EOF,"")
 
 type AlexUserState = [(Int,TokenType)]  -- a stack of codes and default token types
 
 alexInitUserState = [(0,Plain)]
 
-tok :: TokenType -> AlexInput -> Int -> Alex Token
-tok t (_,_,s) len = return (t, take len s)
+tok :: TokenType -> AlexInput -> Int -> Alex Tokens
+tok t (_,_,s) len = return $ singleton (t, take len s)
 
 getUserState :: Alex AlexUserState
 getUserState = Alex $ \s@AlexState{alex_ust=ust} -> Right (s, ust)
@@ -203,10 +204,10 @@ setUserState newstate = Alex $ \s -> Right (s{alex_ust=newstate}, ())
 modifyUserState :: (AlexUserState -> AlexUserState) -> Alex ()
 modifyUserState fn = Alex $ \s@AlexState{alex_ust=ust} -> Right (s{alex_ust = fn ust}, ())
 
-plain :: AlexInput -> Int -> Alex Token
+plain :: AlexInput -> Int -> Alex Tokens
 plain (_,_,s) len = do
   ((_,defaultToken) : _) <- getUserState
-  return (defaultToken, take len s)
+  return $ singleton (defaultToken, take len s)
 
 pushContext :: (Int, TokenType) -> Alex ()
 pushContext newcontext = do
@@ -227,10 +228,10 @@ popContext = do
 (==>) :: Alex b -> (AlexInput -> Int -> Alex a) -> (AlexInput -> Int -> Alex a)
 (act1 ==> act2) inp len = act1 >> act2 inp len
 
-scanner :: String -> Either String [Token]
+scanner :: String -> Either String Tokens
 scanner str = runAlex str $ do
-  let loop acc = do tok <- alexMonadScan
-                    if tok == (EOF,"")
-                       then return $ reverse acc
-                       else let acc' = tok : acc in loop acc'
-  loop []
+  let loop acc = do toks <- alexMonadScan
+                    case viewl toks of
+                       ((t,_) :< _) | t == EOF -> return acc
+                       _ -> loop (acc >< toks)
+  loop empty
