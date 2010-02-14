@@ -1,0 +1,7 @@
+Why another highlighting library?
+
+highlighting-kate is too slow and can really put a load on a server when
+highlighting long source files. illuminate is much faster (100 times
+faster in one test!). The downside is that you have to write your own
+lexers. But this is not actually all that difficult.
+
