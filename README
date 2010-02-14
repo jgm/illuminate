@@ -9,12 +9,16 @@ To try this out:
 
     cabal install
     illuminate illuminate.hs
+    illuminate illuminate.cabal
     illuminate -html illuminate.hs > illuminate.hs.html
-    open illuminate.hs.html
 
 Right now, illuminate can highlight haskell, literate haskell, cabal files,
 c, c++, c#, java, and css.
 
 Want to write a lexer for a language?
 Study the examples in Text/Highlight/Illuminate/*.x.
+
+To test your lexer, add references to it in the three obvious places in
+illuminate.cabal, and in the two obvious places in
+Text/Highlighting/Illuminate.hs. Then 'cabal install'...
 
