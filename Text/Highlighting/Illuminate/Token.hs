@@ -15,6 +15,7 @@ data TokenType =
   | Label
   | Preproc
   | Function
+  | Definition
   | VarId
   | ConId
   | CBracket
@@ -40,6 +41,7 @@ asANSI = concatMap go . consolidate
   go (Label, s)   = highlight [Foreground Red, Underscore] s
   go (Preproc, s) = highlight [Foreground Blue, Underscore] s
   go (Function, s) = highlight [Foreground Blue, Bold] s
+  go (Definition, s) = highlight [Foreground Blue, Bold] s
   go (VarId, s)    = highlight [] s
   go (ConId, s)    = highlight [Foreground Blue] s
   go (CBracket, s) = highlight [Foreground Red] s
@@ -81,7 +83,8 @@ defaultCSS =
  \pre.sourceCode span.VarId { }\n\
  \pre.sourceCode span.ConId { color: #006400; }\n\
  \pre.sourceCode span.Symbol { color: #8b0000; }\n\
- \pre.sourceCode span.Function { color: black; font-weight: bold; }\n\
+ \pre.sourceCode span.Function, pre.sourceCode span.Definition \n\
+ \    { color: black; font-weight: bold; }\n\
  \pre.sourceCode span.Alert { background-color: cyan; }\n\
  \pre.sourceCode span.Classname { color: teal; }\n\
  \pre.sourceCode span.Linenum { font-weight: bold; }\n\
