@@ -35,4 +35,3 @@ langTable =
   , (["css"],                     "CSS",      CSS.scanner)
   , (["cabal"],                   "Cabal",    Cabal.scanner)
   ]
-

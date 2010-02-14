@@ -1,6 +1,6 @@
 {
 {-# OPTIONS -w  #-} -- Alex generate warnings-ridden code.
-module Text.Highlighting.Illuminate.LiterateHaskell (scanner) where
+module Text.Highlighting.Illuminate.LiterateHaskell  where
 }
 
 -- Based on haskell.x example from the alex distribution,

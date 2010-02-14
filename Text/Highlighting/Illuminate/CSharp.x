@@ -1,6 +1,6 @@
 {
 {-# OPTIONS -w  #-} -- Suppress warnings from alex-generated code
-module Text.Highlighting.Illuminate.CSharp (scanner) where
+module Text.Highlighting.Illuminate.CSharp  where
 }
 
 %wrapper "illuminate"

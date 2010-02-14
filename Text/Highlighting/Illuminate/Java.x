@@ -1,6 +1,6 @@
 {
 {-# OPTIONS -w  #-} -- Suppress warnings from alex-generated code
-module Text.Highlighting.Illuminate.Java (scanner) where
+module Text.Highlighting.Illuminate.Java  where
 }
 
 %wrapper "illuminate"

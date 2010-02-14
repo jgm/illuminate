@@ -1,6 +1,6 @@
 {
 {-# OPTIONS -w  #-} -- Suppress warnings from alex-generated code
-module Text.Highlighting.Illuminate.Haskell (scanner) where
+module Text.Highlighting.Illuminate.Haskell  where
 }
 
 -- Based on haskell.x example from the alex distribution,
