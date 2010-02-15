@@ -42,6 +42,8 @@ $hexdigit = [0-9a-fA-F]
        "unicode-bidi" | "vertical-align" | "visibility" | "voice-family" | "volume" |
        "white-space" | "widows" | "width" | "word-spacing" | "z-index")
 
+@endstyletag = \< $white* \/ $white* [Ss][Tt][Yy][Ll][Ee] $white* \>
+
 tokens :-
 
 <comment> {
@@ -62,6 +64,7 @@ tokens :-
   \}                            { popContext ==> tok CBracket }
 }
 
+<0> @endstyletag  { tok EOF }
 <0,cbracket> "/*" { pushContext (comment, Comment) ==> tok Comment }
 <0,cbracket> "//" .*   { pushContext (linecomment, Comment) ==> tok Comment }
 <0>  @selector  { tok Selector }

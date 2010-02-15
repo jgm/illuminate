@@ -7,6 +7,7 @@ import qualified Text.Highlighting.Illuminate.CPlusPlus as CPlusPlus
 import qualified Text.Highlighting.Illuminate.CSharp as CSharp
 import qualified Text.Highlighting.Illuminate.CSS as CSS
 import qualified Text.Highlighting.Illuminate.Haskell as Haskell
+import qualified Text.Highlighting.Illuminate.HTML as HTML
 import qualified Text.Highlighting.Illuminate.Java as Java
 import qualified Text.Highlighting.Illuminate.LiterateHaskell as LiterateHaskell
 
@@ -28,6 +29,7 @@ langTable :: [([String], String, (String -> Either String Tokens))]
 langTable =
   [ (["haskell","hs"],            "Haskell",  Haskell.scanner)
   , (["literatehaskell", "lhs"],  "Literate Haskell", LiterateHaskell.scanner)
+  , (["html","xhtml","htm"],      "HTML",     HTML.scanner)
   , (["c"],                       "C",        C.scanner)
   , (["java"],                    "Java",     Java.scanner)
   , (["cpp","cplusplus","c++"],   "C++",      CPlusPlus.scanner)
