@@ -105,7 +105,7 @@ tokens :-
  @reservedid   { tok Keyword }
 
  @conid (\. @conid)*	\.? { tok ConId }
- ^ @varid   { tok Definition }
+ ^ @varid   { tok Function }
  @varid			{ tok VarId }
 
  @reservedop	{ tok Symbol }
