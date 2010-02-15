@@ -22,6 +22,8 @@ data TokenType =
   | Comment
   | Selector
   | Property
+  | Tag
+  | Entity
   | Alert
   | Plain
   | EOF
@@ -59,6 +61,8 @@ asANSI = F.concatMap go . consolidate
   go (Comment, s) = highlight [Foreground Cyan] s
   go (Selector, s) = highlight [Foreground Blue] s
   go (Property, s) = highlight [Foreground Green, Underscore] s
+  go (Tag, s)      = highlight [Foreground Blue] s
+  go (Entity, s)   = highlight [Foreground Green] s
   go (Alert, s)   = highlight [Background Cyan] s
   go (_, s)       = s
 
@@ -110,6 +114,8 @@ defaultCSS =
  \pre.sourceCode span.Difflines { color: blue; }\n\
  \pre.sourceCode span.Selector { color: purple; }  /* css */\n\
  \pre.sourceCode span.Property { color: blue; }\n\
+ \pre.sourceCode span.Tag { color: blue; }\n\
+ \pre.sourceCode span.Entity { color: green; }\n\
  \pre.sourceCode span.Value { color: #006400; font-style: italic; }\n\
  \pre.sourceCode span.Atom { color: orange; }  /* other */\n\
  \pre.sourceCode span.Meta { font-style: italic; }\n\
