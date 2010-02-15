@@ -65,28 +65,28 @@ $charesc = [abfnrtv\\\"\'\&]
 tokens :-
 
 <comment> {
-  "-}"        { popContext ==> tok Comment }
-  "{-"        { pushContext (comment, Comment) ==> tok Comment }
+  "-}"        { tok Comment ==> popContext }
+  "{-"        { tok Comment ==> pushContext  (comment, Comment) }
   @alert      { tok Alert }
 }
 
 <linecomment> {
-  \n          { popContext ==> tok Whitespace }
+  \n          { tok Whitespace ==> popContext }
   @alert      { tok Alert }
 }
 
 <include> {
   $white+       { tok Whitespace }
-  \< [^ \>]* \> { popContext ==> tok String }
-  \" @string* \" { popContext ==> tok String }
+  \< [^ \>]* \> { tok String ==> popContext }
+  \" @string* \" { tok String ==> popContext }
 }
 
-<0,comment> "{-"  { pushContext (comment, Comment) ==> tok Comment }
+<0,comment> "{-"  { tok Comment ==> pushContext  (comment, Comment) }
 
 <0> {
  $white+       { tok Whitespace }
- "--"\-* / [^$symbol]    { pushContext (linecomment, Comment) ==> tok Comment }
- ^ $white* \# $white* "include"  { pushContext (include, Plain) ==> tok Preproc }
+ "--"\-* / [^$symbol]    { tok Comment ==> pushContext  (linecomment, Comment) }
+ ^ $white* \# $white* "include"  { tok Preproc ==> pushContext  (include, Plain) }
  ^ $white* \# $white* $wordchar*  { tok Preproc }
 
  $special      { tok Symbol }

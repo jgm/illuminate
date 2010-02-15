@@ -1,5 +1,6 @@
 import Text.Highlighting.Illuminate.Token
 import Data.Sequence (Seq, (><), singleton, viewl, ViewL(..), empty)
+import qualified Data.Foldable as F
 {-# LINE 1 "templates/wrappers.hs" #-}
 {-# LINE 1 "templates/wrappers.hs" #-}
 {-# LINE 1 "<built-in>" #-}
@@ -209,24 +210,27 @@ plain (_,_,s) len = do
   ((_,defaultToken) : _) <- getUserState
   return $ singleton (defaultToken, take len s)
 
-pushContext :: (Int, TokenType) -> Alex ()
-pushContext newcontext = do
+pushContext :: (Int, TokenType) -> b -> Alex b
+pushContext newcontext toks = do
   modifyUserState (newcontext :)
   alexSetStartCode $ fst newcontext
+  return toks
 
-popContext :: Alex (Int, TokenType)
-popContext = do
+popContext :: b -> Alex b
+popContext toks = do
   contexts <- getUserState
   case contexts of
        []      -> error "Empty contexts stack!"
-       [x]     -> return x
+       [x]     -> return toks
        (x:y:xs) -> do
            setUserState (y:xs)
            alexSetStartCode $ fst y
-           return y
+           return toks
 
-(==>) :: Alex b -> (AlexInput -> Int -> Alex a) -> (AlexInput -> Int -> Alex a)
-(act1 ==> act2) inp len = act1 >> act2 inp len
+(==>) :: (AlexInput -> Int -> Alex a) -> (a -> Alex b) -> (AlexInput -> Int -> Alex b)
+(act1 ==> act2) inp len = do
+  res <- act1 inp len
+  act2 res
 
 scanner :: String -> Either String Tokens
 scanner str = runAlex str $ do
@@ -235,3 +239,15 @@ scanner str = runAlex str $ do
                        ((t,_) :< _) | t == EOF -> return acc
                        _ -> loop (acc >< toks)
   loop empty
+
+scanWith :: (String -> Either String Tokens) -> Tokens -> Alex Tokens
+scanWith sc toks = Alex $ \s ->
+  case sc (alex_inp s) of
+    Left e -> Left (show e)
+    Right r -> Right (s', toks >< r)
+      where s' = s{alex_pos = newpos, alex_inp = newinp, alex_chr = lastchar}
+            parsed_chars = F.concatMap snd r
+            newpos = foldl alexMove (alex_pos s) parsed_chars
+            lastchar = last parsed_chars
+            newinp = drop (length parsed_chars) (alex_inp s)
+

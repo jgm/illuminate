@@ -31,32 +31,32 @@ $hexdigit = [$digit A-F a-f]
 tokens :-
 
 <comment> {
-  "*/"   { popContext ==> tok Comment }
+  "*/"   { tok Comment ==> popContext }
   @alert { tok Alert }
 }
 
 <linecomment> {
   @alert { tok Alert }
-  \n     { popContext ==> tok Whitespace } 
+  \n     { tok Whitespace ==> popContext } 
 }
 
 <cl> {
   $white+       { tok Whitespace }
-  $wordchar+    { popContext ==> tok Type } 
+  $wordchar+    { tok Type ==> popContext } 
 }
 
 <package> {
   $white+            { tok Whitespace }
-  [$wordchar \. \*]+ { popContext ==> tok ConId }
-  \n                 { popContext ==> tok Whitespace }  
+  [$wordchar \. \*]+ { tok ConId ==> popContext }
+  \n                 { tok Whitespace ==> popContext }  
 }
 
 <0> {
-  "/*"   { pushContext (comment, Comment) ==> tok Comment }
-  "//"   { pushContext (linecomment, Comment) ==> tok Comment }
+  "/*"   { tok Comment ==> pushContext  (comment, Comment) }
+  "//"   { tok Comment ==> pushContext  (linecomment, Comment) }
   ^ $white* $wordchar+ \:  { tok Label }
-  ("class"|"interface") / $white  { pushContext (cl, Plain) ==> tok Keyword } 
-  ("import"|"package") / $white { pushContext (package, Plain) ==> tok Preproc }
+  ("class"|"interface") / $white  { tok Keyword ==> pushContext  (cl, Plain) } 
+  ("import"|"package") / $white { tok Preproc ==> pushContext  (package, Plain) }
   @keyword / ~$wordchar  { tok Keyword }
   @type / ~$wordchar     { tok Type }
   @number                { tok Number }

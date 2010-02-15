@@ -117,27 +117,27 @@ main :-
 
 <comment> {
  .*                                       { tok Comment }
- \n                                       { popContext ==> tok Whitespace }
+ \n                                       { tok Whitespace ==> popContext }
 }
 
 <cond> {
  "if" | "flag" | "else"                   { tok Keyword }
  $white+ / "flag"                         { tok Whitespace }
- $white+                                  { popContext ==> tok Whitespace }
+ $white+                                  { tok Whitespace ==> popContext }
 }
 
 <field> {
- @reservedid                              { popContext ==> tok Keyword }
+ @reservedid                              { tok Keyword ==> popContext }
  [ \t]                                    { tok Whitespace }
- [. \n]                                   { popContext ==> plain }
+ [. \n]                                   { plain ==> popContext }
 }
 
 <0> {
- ^ $white* / "--"                         { pushContext (comment, Comment) ==> tok Whitespace } 
+ ^ $white* / "--"                         { tok Whitespace ==> pushContext  (comment, Comment) } 
  @reservedop                              { tok Symbol }
- @fieldid ":"                             { pushContext (field, Plain) ==> tok Type }
+ @fieldid ":"                             { tok Type ==> pushContext  (field, Plain) }
  ^ @reservedid                            { tok Keyword }
- ^ $white* / "if"|"else"                  { pushContext(cond, Plain) ==> tok Whitespace }
+ ^ $white* / "if"|"else"                  { tok Whitespace ==> pushContext (cond, Plain) }
 }
 
  .           { plain }

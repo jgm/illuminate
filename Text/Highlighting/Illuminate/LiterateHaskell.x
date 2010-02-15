@@ -65,39 +65,39 @@ $charesc = [abfnrtv\\\"\'\&]
 tokens :-
 
 <0> {
- ^ \>               { pushContext(bird, Plain) ==> tok Comment } 
- ^ "\begin{code}"   { pushContext(code, Plain) ==> tok Comment }
+ ^ \>               { tok Comment ==> pushContext (bird, Plain) } 
+ ^ "\begin{code}"   { tok Comment ==> pushContext (code, Plain) }
  @alert             { tok Alert }
  [. \n]             { tok Comment }
 }
 
 <comment> {
-  "-}"        { popContext ==> tok Comment }
-  "{-"        { pushContext (comment, Comment) ==> tok Comment }
+  "-}"        { tok Comment ==> popContext }
+  "{-"        { tok Comment ==> pushContext  (comment, Comment) }
   @alert      { tok Alert }
 }
 
 <linecomment> {
-  \n          { popContext ==> tok Whitespace }
+  \n          { tok Whitespace ==> popContext }
   @alert      { tok Alert }
 }
 
 <include> {
   $white+       { tok Whitespace }
-  \< [^ \>]* \> { popContext ==> tok String }
-  \" @string* \" { popContext ==> tok String }
+  \< [^ \>]* \> { tok String ==> popContext }
+  \" @string* \" { tok String ==> popContext }
 }
 
-<code,comment> "{-"  { pushContext (comment, Comment) ==> tok Comment }
+<code,comment> "{-"  { tok Comment ==> pushContext  (comment, Comment) }
 
 <code> {
- ^ "\end{code}"  { popContext ==> tok Comment }
+ ^ "\end{code}"  { tok Comment ==> popContext }
 }
 
 <bird,code> {
  ($white # [\n\r])+      { tok Whitespace }
- "--"\-* / [^$symbol]    { pushContext (linecomment, Comment) ==> tok Comment }
- ^ $white* \# $white* "include"  { pushContext (include, Plain) ==> tok Preproc }
+ "--"\-* / [^$symbol]    { tok Comment ==> pushContext  (linecomment, Comment) }
+ ^ $white* \# $white* "include"  { tok Preproc ==> pushContext  (include, Plain) }
  ^ $white* \# $white* $wordchar*  { tok Preproc }
 
  $special      { tok Symbol }
@@ -126,7 +126,7 @@ tokens :-
 
 <bird> {
  .          { plain }
- \n         { popContext ==> tok Whitespace }
+ \n         { tok Whitespace ==> popContext }
 }
 
 <comment, code> {

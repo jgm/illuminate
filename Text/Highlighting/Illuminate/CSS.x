@@ -47,13 +47,13 @@ $hexdigit = [0-9a-fA-F]
 tokens :-
 
 <comment> {
-  "*/"   { popContext ==> tok Comment }
+  "*/"   { tok Comment ==> popContext }
   @alert { tok Alert }
 }
 
 <linecomment> {
   @alert { tok Alert }
-  \n     { popContext ==> tok Whitespace } 
+  \n     { tok Whitespace ==> popContext } 
 }
 
 <cbracket> {
@@ -61,15 +61,15 @@ tokens :-
   $digit+                       { tok Number }
   @property / $white* \:        { tok Property }
   $symbol                       { tok Symbol }
-  \}                            { popContext ==> tok CBracket }
+  \}                            { tok CBracket ==> popContext }
 }
 
 <0> @endstyletag  { tok EOF }
-<0,cbracket> "/*" { pushContext (comment, Comment) ==> tok Comment }
-<0,cbracket> "//" .*   { pushContext (linecomment, Comment) ==> tok Comment }
+<0,cbracket> "/*" { tok Comment ==> pushContext (comment, Comment) }
+<0,cbracket> "//" .*   { tok Comment ==> pushContext (linecomment, Comment) }
 <0>  @selector  { tok Selector }
 <0>  $wordchar+ / ~$wordchar  { tok String }
-<0>  \{   { pushContext (cbracket, Plain) ==> tok CBracket }
+<0>  \{   { tok CBracket ==> pushContext (cbracket, Plain) }
 <0>  $symbol    { tok Symbol }
 
  .           { plain }

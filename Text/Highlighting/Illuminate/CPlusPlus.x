@@ -45,32 +45,32 @@ $hexdigit = [$digit A-F a-f]
 tokens :-
 
 <comment> {
-  "*/"   { popContext ==> tok Comment }
+  "*/"   { tok Comment ==> popContext }
   @alert { tok Alert }
 }
 
 <linecomment> {
   @alert { tok Alert }
-  \n     { popContext ==> tok Whitespace } 
+  \n     { tok Whitespace ==> popContext } 
 }
 
 <struct> {
   $white+       { tok Whitespace }
-  $wordchar+    { popContext ==> tok Type } 
+  $wordchar+    { tok Type ==> popContext } 
 }
 
 <include> {
   $white+       { tok Whitespace }
-  \< [^ \>]* \> { popContext ==> tok String }
-  \" @string \" { popContext ==> tok String }
+  \< [^ \>]* \> { tok String ==> popContext }
+  \" @string \" { tok String ==> popContext }
 }
 
 <0> {
-  "/*"   { pushContext (comment, Comment) ==> tok Comment }
-  "//"   { pushContext (linecomment, Comment) ==> tok Comment }
+  "/*"   { tok Comment ==> pushContext  (comment, Comment) }
+  "//"   { tok Comment ==> pushContext  (linecomment, Comment) }
   ^ $white* $wordchar+ \:  { tok Label }
-  ("struct"|"class"|"typename") / $white  { pushContext (struct, Plain) ==> tok Keyword } 
-  ^ $white* \# $white* "include"  { pushContext (include, Plain) ==> tok Preproc }
+  ("struct"|"class"|"typename") / $white  { tok Keyword ==> pushContext  (struct, Plain) } 
+  ^ $white* \# $white* "include"  { tok Preproc ==> pushContext  (include, Plain) }
   ^ $white* \# $white* $wordchar*  { tok Preproc }
   @keyword / ~$wordchar  { tok Keyword }
   @type / ~$wordchar     { tok Type }
