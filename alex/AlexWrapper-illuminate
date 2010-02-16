@@ -240,6 +240,12 @@ scanner str = runAlex str $ do
                        _ -> loop (acc >< toks)
   loop empty
 
+tokenizeWith :: (String -> Either String Tokens) -> AlexInput -> Int -> Alex Tokens
+tokenizeWith sc (_,_,s) len = do
+  case sc (take len s) of
+    Left e   -> fail e
+    Right r  -> return r
+
 scanWith :: (String -> Either String Tokens) -> Tokens -> Alex Tokens
 scanWith sc toks = Alex $ \s ->
   case sc (alex_inp s) of

@@ -11,6 +11,7 @@ License-file:        LICENSE
 Author:              John MacFarlane
 Maintainer:          jgm@berkeley.edu
 Extra-Source-Files:  default.css
+                     Text/Highlighting/Illuminate/Alex.x
                      Text/Highlighting/Illuminate/C.x
                      Text/Highlighting/Illuminate/Cabal.x
                      Text/Highlighting/Illuminate/CPlusPlus.x
@@ -32,6 +33,7 @@ Library
   Build-Tools:       alex >= 2 && < 3
   Exposed-Modules:   Text.Highlighting.Illuminate
                      Text.Highlighting.Illuminate.Token
+                     Text.Highlighting.Illuminate.Alex
                      Text.Highlighting.Illuminate.C
                      Text.Highlighting.Illuminate.Cabal
                      Text.Highlighting.Illuminate.CPlusPlus
@@ -47,7 +49,8 @@ Library
 Executable illuminate
   Main-Is:           illuminate.hs
   Build-depends:     base >= 3 && <5, array, containers, xhtml, filepath
-  Other-modules:     Text.Highlighting.Illuminate.C
+  Other-modules:     Text.Highlighting.Illuminate.Alex
+                     Text.Highlighting.Illuminate.C
                      Text.Highlighting.Illuminate.Cabal
                      Text.Highlighting.Illuminate.CPlusPlus
                      Text.Highlighting.Illuminate.CSharp

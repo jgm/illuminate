@@ -1,6 +1,7 @@
 module Text.Highlighting.Illuminate ( tokenize, languages, asANSI, asHtmlCSS, defaultCSS ) where
 import Data.Char (toLower)
 import Text.Highlighting.Illuminate.Token
+import qualified Text.Highlighting.Illuminate.Alex as Alex
 import qualified Text.Highlighting.Illuminate.C as C
 import qualified Text.Highlighting.Illuminate.Cabal as Cabal
 import qualified Text.Highlighting.Illuminate.CPlusPlus as CPlusPlus
@@ -29,6 +30,7 @@ langTable :: [([String], String, (String -> Either String Tokens))]
 langTable =
   [ (["haskell","hs"],            "Haskell",  Haskell.scanner)
   , (["literatehaskell", "lhs"],  "Literate Haskell", LiterateHaskell.scanner)
+  , (["alex", "x"],               "Alex",     Alex.scanner)
   , (["html","xhtml","htm"],      "HTML",     HTML.scanner)
   , (["c"],                       "C",        C.scanner)
   , (["java"],                    "Java",     Java.scanner)
