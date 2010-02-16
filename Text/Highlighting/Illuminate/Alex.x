@@ -6,28 +6,29 @@ import qualified Text.Highlighting.Illuminate.Haskell as Haskell
 
 %wrapper "illuminate"
 
-$wordchar = [0-9a-zA-Z\_]
-$symbol = [\~ \! \% \^ \* \( \) \- \+ \= \[ \] \" \: \; \, \. \/ \? \& \< \> \|]
-$digit = [0-9]
-$hexdigit = [0-9a-fA-F]
+$alpha = [A-Za-z]
+$wordchar = [0-9 $alpha \_]
+$symbol = [\~ \! \% \^ \* \( \) \- \+ \= \[ \] \" \: \; \, \. \/ \? \& \< \> \| \{ \} \= \^ \\]
 @stringchars = [^ \" \\]+ | \\ .
 
 tokens :-
 
 <haskell> {
  ([^\{ \}]+ | \{ [^ \{ \}]+ \})*  { tokenizeWith Haskell.scanner }
- \}                               { tok Symbol ==> popContext } 
+ \}                               { tok CBracket ==> popContext } 
 }
-
-<0> {
-
+<0,context> {
+ \< [$wordchar \,]+ \> ($white* \{)?      { tok Function }
  ^ \% "wrapper"                           { tok Preproc }
- ":-"                                     { tok Symbol }
- [\[ \] \-]                               { tok Symbol }
+ \{                                       { tok CBracket ==> pushContext (haskell, Plain) }
+ \}                                       { tok Function } -- end of context
  \\ $symbol                               { tok Symbol }
- \{                                       { tok Symbol ==> pushContext (haskell, Plain) }
+ \$ $wordchar+                            { tok ConId }
+ \@ $wordchar+                            { tok ConId }
+ ":-"                                     { tok Symbol }
  \" @stringchars+ \"                      { tok String }
  "--" .*                                  { tok Comment }
+ $symbol                                  { tok Symbol }
 }
  .           { plain }
  \n          { tok Whitespace }
