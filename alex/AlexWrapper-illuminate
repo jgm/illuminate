@@ -243,7 +243,7 @@ scanner str = runAlex str $ do
 scanWith :: (String -> Either String Tokens) -> Tokens -> Alex Tokens
 scanWith sc toks = Alex $ \s ->
   case sc (alex_inp s) of
-    Left e -> Left (show e)
+    Left e  -> Left e
     Right r -> Right (s', toks >< r)
       where s' = s{alex_pos = newpos, alex_inp = newinp, alex_chr = lastchar}
             parsed_chars = F.concatMap snd r
