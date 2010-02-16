@@ -7,8 +7,8 @@ add other languages
   x cabal
   x lhs
   x java
+  x alex
 
-  _ alex
   _ GNU Make
 
   _ latex
