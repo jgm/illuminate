@@ -14,8 +14,9 @@ add other languages
            -- handle this by having scanner put the language name in state
            -- the handlers for code sections { } can then call the appropriate scanner
   
-  _ better records for representing languages w/ extension info - see pygments
+  x better records for representing languages w/ extension info - see pygments
   _ beef up illuminate to take options
+  _ add processing with regex to split up a token rather than overusing states
 
   _ GNU Make
 
