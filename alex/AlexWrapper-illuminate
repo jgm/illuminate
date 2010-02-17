@@ -1,5 +1,5 @@
-import Text.Highlighting.Illuminate.Token
-import Data.Sequence (Seq, (><), singleton, viewl, ViewL(..), empty)
+import Text.Highlighting.Illuminate.Types
+import Data.Sequence (Seq, (><), (<|), (|>), singleton, viewl, ViewL(..), empty)
 import qualified Data.Foldable as F
 {-# LINE 1 "templates/wrappers.hs" #-}
 {-# LINE 1 "templates/wrappers.hs" #-}
@@ -232,7 +232,7 @@ popContext toks = do
   res <- act1 inp len
   act2 res
 
-scanner :: String -> Either String Tokens
+scanner :: Scanner
 scanner str = runAlex str $ do
   let loop acc = do toks <- alexMonadScan
                     case viewl toks of
@@ -240,15 +240,15 @@ scanner str = runAlex str $ do
                        _ -> loop (acc >< toks)
   loop empty
 
-tokenizeWith :: (String -> Either String Tokens) -> AlexInput -> Int -> Alex Tokens
-tokenizeWith sc (_,_,s) len = do
-  case sc (take len s) of
+tokenizeWith :: Lexer -> AlexInput -> Int -> Alex Tokens
+tokenizeWith lx (_,_,s) len = do
+  case (scan lx) (take len s) of
     Left e   -> fail e
     Right r  -> return r
 
-scanWith :: (String -> Either String Tokens) -> Tokens -> Alex Tokens
-scanWith sc toks = Alex $ \s ->
-  case sc (alex_inp s) of
+scanWith :: Lexer -> Tokens -> Alex Tokens
+scanWith lx toks = Alex $ \s ->
+  case (scan lx) (alex_inp s) of
     Left e  -> Left e
     Right r -> Right (s', toks >< r)
       where s' = s{alex_pos = newpos, alex_inp = newinp, alex_chr = lastchar}

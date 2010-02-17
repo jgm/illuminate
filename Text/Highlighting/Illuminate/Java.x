@@ -71,3 +71,11 @@ tokens :-
  .           { plain }
  \n          { tok Whitespace }
 
+{
+lexer :: Lexer
+lexer = Lexer { name = "Java"
+              , aliases = ["java"]
+              , extensions = ["java"]
+              , scan = scanner }
+}
+

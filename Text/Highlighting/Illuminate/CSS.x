@@ -75,3 +75,12 @@ tokens :-
  .           { plain }
  \n          { tok Whitespace }
 
+{
+lexer :: Lexer
+lexer = Lexer { name = "CSS"
+              , aliases = ["css"]
+              , extensions = ["css"]
+              , scan = scanner }
+}
+
+

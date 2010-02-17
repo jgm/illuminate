@@ -32,7 +32,8 @@ Library
   Build-Depends:     base >= 3 && < 5, containers, xhtml, utf8-string, hscolour
   Build-Tools:       alex >= 2 && < 3
   Exposed-Modules:   Text.Highlighting.Illuminate
-                     Text.Highlighting.Illuminate.Token
+                     Text.Highlighting.Illuminate.Types
+                     Text.Highlighting.Illuminate.Format
                      Text.Highlighting.Illuminate.Alex
                      Text.Highlighting.Illuminate.C
                      Text.Highlighting.Illuminate.Cabal

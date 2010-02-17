@@ -116,3 +116,10 @@ tokens :-
 .       { plain}
 \n      { tok Whitespace }
 
+{
+lexer :: Lexer
+lexer = Lexer { name = "Haskell"
+              , aliases = ["haskell"]
+              , extensions = ["hs"]
+              , scan = scanner }
+}

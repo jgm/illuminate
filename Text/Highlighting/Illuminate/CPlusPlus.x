@@ -87,3 +87,11 @@ tokens :-
  .           { plain }
  \n          { tok Whitespace }
 
+{
+lexer :: Lexer
+lexer = Lexer { name = "C++"
+              , aliases = ["c++","cplusplus","cpp"]
+              , extensions = ["cpp"]
+              , scan = scanner }
+}
+

@@ -134,3 +134,12 @@ tokens :-
  \n          { tok Whitespace }
 }
 
+{
+lexer :: Lexer
+lexer = Lexer { name = "Literate Haskell"
+              , aliases = ["literatehaskell","lhs"]
+              , extensions = ["lhs"]
+              , scan = scanner }
+}
+
+

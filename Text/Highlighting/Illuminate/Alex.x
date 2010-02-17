@@ -14,7 +14,7 @@ $symbol = [\~ \! \% \^ \* \( \) \- \+ \= \[ \] \" \: \; \, \. \/ \? \& \< \> \| 
 tokens :-
 
 <haskell> {
- ([^\{ \}]+ | \{ [^ \{ \}]+ \})*  { tokenizeWith Haskell.scanner }
+ ([^\{ \}]+ | \{ [^ \{ \}]+ \})*  { tokenizeWith Haskell.lexer }
  \}                               { tok CBracket ==> popContext } 
 }
 <0,context> {
@@ -33,3 +33,10 @@ tokens :-
  .           { plain }
  \n          { tok Whitespace }
 
+{
+lexer :: Lexer
+lexer = Lexer { name = "Alex"
+              , aliases = ["alex"]
+              , extensions = ["x"]
+              , scan = scanner }
+}

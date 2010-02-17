@@ -49,7 +49,7 @@ tokens :-
  "<?"         { tok Preproc ==> pushContext (ppa,Plain) }
 
  -- TODO: script tag
- @styletag    { tok Type ==> scanWith CSS.scanner } 
+ @styletag    { tok Type ==> scanWith CSS.lexer  } 
  @endstyletag { tok Type }
 
  \< $white* [a-zA-Z0-9:]+ $white*  { tok Tag ==> pushContext (tag,Plain) }
@@ -58,4 +58,12 @@ tokens :-
 }
  .           { plain }
  \n          { tok Whitespace }
+
+{
+lexer :: Lexer
+lexer = Lexer { name = "HTML"
+              , aliases = ["html","xhtml"]
+              , extensions = ["html","xhtml","htm"]
+              , scan = scanner }
+}
 

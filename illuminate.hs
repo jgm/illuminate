@@ -29,7 +29,7 @@ main = do
   let file = head fnames
   let lang' = dropWhile (=='.') $ takeExtension file
   s <- readFile file
-  let tokens = case tokenize lang' s of
+  let tokens = case tokenize (lexerByExtension lang') s of
                     Right toks  -> toks
                     Left err    -> error $ show err
   if "-html" `elem` opts

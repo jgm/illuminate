@@ -92,3 +92,13 @@ tokens :-
  .           { plain }
  \n          { tok Whitespace }
 
+{
+lexer :: Lexer
+lexer = Lexer { name = "C#"
+              , aliases = ["c#","csharp"]
+              , extensions = ["cs"]
+              , scan = scanner }
+}
+
+
+

@@ -1,6 +1,9 @@
-module Text.Highlighting.Illuminate ( tokenize, languages, asANSI, asHtmlCSS, defaultCSS ) where
+module Text.Highlighting.Illuminate ( tokenize, languages, lexerByName, lexerByExtension, asANSI, asHtmlCSS, defaultCSS ) where
 import Data.Char (toLower)
-import Text.Highlighting.Illuminate.Token
+import Data.List (find)
+import Data.Sequence (singleton)
+import Text.Highlighting.Illuminate.Types
+import Text.Highlighting.Illuminate.Format
 import qualified Text.Highlighting.Illuminate.Alex as Alex
 import qualified Text.Highlighting.Illuminate.C as C
 import qualified Text.Highlighting.Illuminate.Cabal as Cabal
@@ -12,30 +15,29 @@ import qualified Text.Highlighting.Illuminate.HTML as HTML
 import qualified Text.Highlighting.Illuminate.Java as Java
 import qualified Text.Highlighting.Illuminate.LiterateHaskell as LiterateHaskell
 
-tokenize :: String -> String -> Either String Tokens
-tokenize lang source =
-  case scannerFor (map toLower lang) of
-        Just scan -> scan source
-        Nothing   -> Left $ "Unknown language `" ++ lang ++ "'"
-
-scannerFor :: String -> Maybe (String -> Either String Tokens)
-scannerFor lang =
-  let table = concatMap (\(ls,_,sc) -> map (\x -> (x,sc)) ls) langTable
-  in  lookup (map toLower lang) table
+tokenize :: Maybe Lexer -> String -> Either String Tokens
+tokenize (Just lexer) source = scan lexer source
+tokenize Nothing source = Right $ singleton $ (Plain, source)
 
 languages :: [String]
-languages = map (\(_,s,_) -> s) langTable
+languages = map name lexers
 
-langTable :: [([String], String, (String -> Either String Tokens))]
-langTable =
-  [ (["haskell","hs"],            "Haskell",  Haskell.scanner)
-  , (["literatehaskell", "lhs"],  "Literate Haskell", LiterateHaskell.scanner)
-  , (["alex", "x"],               "Alex",     Alex.scanner)
-  , (["html","xhtml","htm"],      "HTML",     HTML.scanner)
-  , (["c"],                       "C",        C.scanner)
-  , (["java"],                    "Java",     Java.scanner)
-  , (["cpp","cplusplus","c++"],   "C++",      CPlusPlus.scanner)
-  , (["csharp","c#","cs"],        "C#",       CSharp.scanner)
-  , (["css"],                     "CSS",      CSS.scanner)
-  , (["cabal"],                   "Cabal",    Cabal.scanner)
-  ]
+lexerByName :: String -> Maybe Lexer
+lexerByName s = find matchName lexers
+  where matchName l = map toLower s `elem` (map toLower (name l) : aliases l)
+
+lexerByExtension :: String -> Maybe Lexer
+lexerByExtension s = find (\l -> s `elem` extensions l) lexers
+
+lexers :: [Lexer]
+lexers = [ Haskell.lexer
+         , LiterateHaskell.lexer
+         , Alex.lexer
+         , HTML.lexer
+         , C.lexer
+         , Java.lexer
+         , CPlusPlus.lexer
+         , CSharp.lexer
+         , CSS.lexer
+         , Cabal.lexer
+         ]

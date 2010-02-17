@@ -142,4 +142,11 @@ main :-
 
  .           { plain }
  \n          { tok Whitespace }
- 
+
+{
+lexer :: Lexer
+lexer = Lexer { name = "Cabal"
+              , aliases = ["cabal"]
+              , extensions = ["cabal"]
+              , scan = scanner }
+}

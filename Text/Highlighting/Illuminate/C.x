@@ -79,3 +79,10 @@ tokens :-
  .           { plain }
  \n          { tok Whitespace }
 
+{
+lexer :: Lexer
+lexer = Lexer { name = "C"
+              , aliases = ["c"]
+              , extensions = ["c"]
+              , scan = scanner }
+}
