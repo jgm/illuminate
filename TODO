@@ -8,6 +8,14 @@ add other languages
   x lhs
   x java
   x alex
+  _ lex
+  _ yacc
+  _ happy  -- all of these on same pattern, w/ same extensions (yacc/happy, lex/alex)
+           -- handle this by having scanner put the language name in state
+           -- the handlers for code sections { } can then call the appropriate scanner
+  
+  _ better records for representing languages w/ extension info - see pygments
+  _ beef up illuminate to take options
 
   _ GNU Make
 
