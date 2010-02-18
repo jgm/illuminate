@@ -21,15 +21,9 @@ tokens :-
  "-->"        { tok Comment ==> popContext }
  \-           { tok Comment }
 }
-<ppa> {
- [^ \?]+      { tok Preproc }
- "?>"         { tok Preproc ==> popContext }
- \?           { tok Preproc }
-}
-<ppb> {
- [^ \!]+      { tok Preproc }
- "!>"         { tok Preproc ==> popContext }
- \!           { tok Preproc }
+<declaration> {
+ [^ \>]+      { tok Preproc }
+ \>           { tok Preproc ==> popContext }
 }
 <cdata> {
  [^ \]]+      { tok Preproc }
@@ -38,6 +32,11 @@ tokens :-
 }
 <tag> {
  \>           { tok Tag ==> popContext }
+ $wordchar+ / \=    { tok Keyword }
+ \=            { tok Symbol }
+ \" [^\"]* \"  { tok String }
+ \' [^\']* \'  { tok String }
+ [0-9]+        { tok Number }
  -- TODO: add lexer for attributes
 }
 <0> {
@@ -45,8 +44,7 @@ tokens :-
  @entity      { tok Entity }
  "<!--"       { tok Comment ==> pushContext (comment,Comment) }
  "<![CDATA["  { tok Preproc ==> pushContext (cdata,Plain) }
- "<!"         { tok Preproc ==> pushContext (ppb,Plain) }
- "<?"         { tok Preproc ==> pushContext (ppa,Plain) }
+ \< [\! \?]   { tok Preproc ==> pushContext (declaration,Plain) }
 
  -- TODO: script tag
  @styletag    { tok Type ==> scanWith CSS.lexer  } 
@@ -56,8 +54,8 @@ tokens :-
  \< $white* \/ $white* [a-zA-Z0-9:]+ $white* \>  { tok Tag }
 
 }
+ $white+     { tok Whitespace }
  .           { plain }
- \n          { tok Whitespace }
 
 {
 lexer :: Lexer
