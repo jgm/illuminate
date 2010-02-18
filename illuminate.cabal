@@ -29,7 +29,8 @@ Flag executable
   Default:           True
 
 Library
-  Build-Depends:     base >= 3 && < 5, containers, xhtml, utf8-string, hscolour
+  Build-Depends:     base >= 3 && < 5, containers, xhtml, utf8-string, hscolour,
+                     regex-tdfa
   Build-Tools:       alex >= 2 && < 3
   Exposed-Modules:   Text.Highlighting.Illuminate
                      Text.Highlighting.Illuminate.Types

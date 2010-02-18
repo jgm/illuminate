@@ -1,5 +1,7 @@
 import Text.Highlighting.Illuminate.Types
-import Data.Sequence (Seq, (><), (<|), (|>), singleton, viewl, ViewL(..), empty)
+import Data.Sequence (Seq, (><), (<|), (|>), singleton, viewl, ViewL(..))
+import qualified Data.Sequence as Seq (empty)
+import Text.Regex.TDFA
 import qualified Data.Foldable as F
 {-# LINE 1 "templates/wrappers.hs" #-}
 {-# LINE 1 "templates/wrappers.hs" #-}
@@ -238,7 +240,14 @@ scanner str = runAlex str $ do
                     case viewl toks of
                        ((t,_) :< _) | t == EOF -> return acc
                        _ -> loop (acc >< toks)
-  loop empty
+  loop Seq.empty
+
+split :: String         -- ^ regular expression for breaking string into pieces
+      -> [TokenType]    -- ^ list of token types for the pieces, left to right
+      -> AlexInput -> Int -> Alex Tokens
+split re tokenTypes (_,_,s) len = do
+  let (_,_,_,matches) :: (String, String, String, [String]) = (take len s) =~ re
+  return $ foldl (|>) Seq.empty $ zip tokenTypes matches
 
 tokenizeWith :: Lexer -> AlexInput -> Int -> Alex Tokens
 tokenizeWith lx (_,_,s) len = do

@@ -18,10 +18,10 @@ tokens :-
  \}                               { tok CBracket ==> popContext } 
 }
 <0,context> {
- \< [$wordchar \,]+ \> ($white* \{)?      { tok Function }
+ \< [^>]+ \> ($white* \{)?                { split "(<[^>]+>)( *)({?)" [Function, Whitespace, CBracket] }
  ^ \% "wrapper"                           { tok Preproc }
  \{                                       { tok CBracket ==> pushContext (haskell, Plain) }
- \}                                       { tok Function } -- end of context
+ \}                                       { tok CBracket } -- end of context
  \\ $symbol                               { tok Symbol }
  \$ $wordchar+                            { tok ConId }
  \@ $wordchar+                            { tok ConId }
