@@ -247,7 +247,8 @@ split :: String         -- ^ regular expression for breaking string into pieces
       -> AlexInput -> Int -> Alex Tokens
 split re tokenTypes (_,_,s) len = do
   let (_,_,_,matches) :: (String, String, String, [String]) = (take len s) =~ re
-  return $ foldl (|>) Seq.empty $ zip tokenTypes matches
+  return $ foldl (\accum (t,s) -> if null s then accum else accum |> (t,s))
+           Seq.empty $ zip tokenTypes matches
 
 tokenizeWith :: Lexer -> AlexInput -> Int -> Alex Tokens
 tokenizeWith lx (_,_,s) len = do

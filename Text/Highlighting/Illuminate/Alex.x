@@ -8,7 +8,7 @@ import qualified Text.Highlighting.Illuminate.Haskell as Haskell
 
 $alpha = [A-Za-z]
 $wordchar = [0-9 $alpha \_]
-$symbol = [\~ \! \% \^ \* \( \) \- \+ \= \[ \] \" \: \; \, \. \/ \? \& \< \> \| \{ \} \= \^ \\]
+$symbol = [\~ \! \% \^ \* \( \) \- \+ \= \[ \] \" \: \; \, \. \/ \? \& \< \> \| \{ \} \= \^ \\ \$ \@]
 @stringchars = [^ \" \\]+ | \\ .
 
 tokens :-
@@ -17,12 +17,11 @@ tokens :-
  ([^\{ \}]+ | \{ [^ \{ \}]+ \})*  { tokenizeWith Haskell.lexer }
  \}                               { tok CBracket ==> popContext } 
 }
-<0,context> {
+<0> {
  \< [^>]+ \> ($white* \{)?                { split "(<[^>]+>)( *)({?)" [Function, Whitespace, CBracket] }
  ^ \% "wrapper"                           { tok Preproc }
- \{                                       { tok CBracket ==> pushContext (haskell, Plain) }
+ \\ .                                     { tok Symbol }
  \}                                       { tok CBracket } -- end of context
- \\ $symbol                               { tok Symbol }
  \$ $wordchar+                            { tok ConId }
  \@ $wordchar+                            { tok ConId }
  ":-"                                     { tok Symbol }
@@ -30,9 +29,10 @@ tokens :-
  "--" .*                                  { tok Comment }
  $symbol                                  { tok Symbol }
 }
- .           { plain }
- \n          { tok Whitespace }
 
+ $white+                                  { tok Whitespace }
+ [^ \\]                                   { plain }
+ \\                                       { plain }
 {
 lexer :: Lexer
 lexer = Lexer { name = "Alex"
