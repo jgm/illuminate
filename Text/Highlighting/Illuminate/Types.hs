@@ -8,6 +8,7 @@ data TokenType =
   | String
   | Char
   | Number
+  | Regex
   | Type
   | Label
   | Preproc

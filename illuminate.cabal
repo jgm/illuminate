@@ -20,6 +20,7 @@ Extra-Source-Files:  default.css
                      Text/Highlighting/Illuminate/Haskell.x
                      Text/Highlighting/Illuminate/HTML.x
                      Text/Highlighting/Illuminate/Java.x
+                     Text/Highlighting/Illuminate/Javascript.x
                      Text/Highlighting/Illuminate/LiterateHaskell.x
                      alex/AlexWrapper-illuminate
                      alex/AlexTemplate-ghc
@@ -44,6 +45,7 @@ Library
                      Text.Highlighting.Illuminate.Haskell
                      Text.Highlighting.Illuminate.HTML
                      Text.Highlighting.Illuminate.Java
+                     Text.Highlighting.Illuminate.Javascript
                      Text.Highlighting.Illuminate.LiterateHaskell
   Ghc-Options:       -Wall -funbox-strict-fields
   Ghc-Prof-Options:  -auto-all -caf-all -O0
@@ -60,6 +62,7 @@ Executable illuminate
                      Text.Highlighting.Illuminate.Haskell
                      Text.Highlighting.Illuminate.HTML
                      Text.Highlighting.Illuminate.Java
+                     Text.Highlighting.Illuminate.Javascript
                      Text.Highlighting.Illuminate.LiterateHaskell
   Build-Tools:       alex >= 2 && < 3
   Ghc-Options:       -Wall -funbox-strict-fields

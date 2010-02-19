@@ -13,6 +13,7 @@ import qualified Text.Highlighting.Illuminate.CSS as CSS
 import qualified Text.Highlighting.Illuminate.Haskell as Haskell
 import qualified Text.Highlighting.Illuminate.HTML as HTML
 import qualified Text.Highlighting.Illuminate.Java as Java
+import qualified Text.Highlighting.Illuminate.Javascript as Javascript
 import qualified Text.Highlighting.Illuminate.LiterateHaskell as LiterateHaskell
 
 tokenize :: Maybe Lexer -> String -> Either String Tokens
@@ -36,6 +37,7 @@ lexers = [ Haskell.lexer
          , HTML.lexer
          , C.lexer
          , Java.lexer
+         , Javascript.lexer
          , CPlusPlus.lexer
          , CSharp.lexer
          , CSS.lexer
