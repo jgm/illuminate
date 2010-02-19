@@ -2,16 +2,21 @@
 {-# OPTIONS -w  #-} -- Suppress warnings from alex-generated code
 module Text.Highlighting.Illuminate.HTML  where
 import qualified Text.Highlighting.Illuminate.CSS as CSS
+import qualified Text.Highlighting.Illuminate.Javascript as Javascript 
 }
 
 %wrapper "illuminate"
 
 $wordchar = [0-9a-zA-Z\_]
-$symbol = [\~ \! \% \^ \* \( \) \- \+ \= \[ \] \" \: \; \, \. \/ \? \& \< \> \|]
+$symbol = [\~ \! \% \^ \* \( \) \- \+ \= \[ \] \" \: \; \, \. \/ \? \& \< \> \| \/]
 $digit = [0-9]
 $hexdigit = [0-9a-fA-F]
-@styletag = \< $white* [Ss][Tt][Yy][Ll][Ee] [^ \>]* \>
-@endstyletag = \< $white* \/ $white* [Ss][Tt][Yy][Ll][Ee] $white* \>
+@style = [Ss][Tt][Yy][Ll][Ee]
+@styletag = \< $white* @style
+@endstyletag = \< $white* \/ $white* @style $white* \>
+@script = [Ss][Cc][Rr][Ii][Pp][Tt] 
+@scripttag = \< $white* @script
+@endscripttag = \< $white* \/ $white* @script $white* \>
 @entity = \& [^ $white]+ \;
 
 tokens :-
@@ -30,14 +35,23 @@ tokens :-
  "]]>"        { tok Preproc ==> popContext }
  \]           { tok Preproc }
 }
+<styletag> {
+ \>           { tok Tag ==> scanWith CSS.lexer }
+ @endstyletag { tok Tag ==> popContext }
+}
+<scripttag> {
+ \>            { tok Tag ==> scanWith Javascript.lexer }
+ @endscripttag { tok Tag ==> popContext }
+}
 <tag> {
  \>           { tok Tag ==> popContext }
+}
+<tag,styletag,scripttag> {
  $wordchar+ / \=    { tok Keyword }
  \=            { tok Symbol }
  \" [^\"]* \"  { tok String }
  \' [^\']* \'  { tok String }
  [0-9]+        { tok Number }
- -- TODO: add lexer for attributes
 }
 <0> {
  [^ \< \&]+   { plain }
@@ -46,11 +60,9 @@ tokens :-
  "<![CDATA["  { tok Preproc ==> pushContext (cdata,Plain) }
  \< [\! \?]   { tok Preproc ==> pushContext (declaration,Plain) }
 
- -- TODO: script tag
- @styletag    { tok Type ==> scanWith CSS.lexer  } 
- @endstyletag { tok Type }
-
- \< $white* [a-zA-Z0-9:]+ $white*  { tok Tag ==> pushContext (tag,Plain) }
+ @styletag     { tok Tag ==> pushContext (styletag,Plain) }
+ @scripttag    { tok Tag ==> pushContext (scripttag,Plain) }
+ \< $white* [a-zA-Z0-9:]+  { tok Tag ==> pushContext (tag,Plain) }
  \< $white* \/ $white* [a-zA-Z0-9:]+ $white* \>  { tok Tag }
 
 }

@@ -28,6 +28,8 @@ $hexdigit = [$digit A-F a-f]
 @string = \" ([^ \" \\] | \\ .)* \" 
 @char   = \' ([^ \' \\] | \\ .)* \'
 @regexp = \/ (\\ .|[^ \* \\ \/])(\\.|[^ \\ \/])* \/ [gim]*
+@script = [Ss][Cc][Rr][Ii][Pp][Tt] 
+@endscripttag = \< $white* \/ $white* @script $white* \>
 
 tokens :-
 
@@ -47,6 +49,7 @@ tokens :-
   \" @string \" { tok String ==> popContext }
 }
 
+<0> @endscripttag  { tok EOF }
 <0> {
   "/*"   { tok Comment ==> pushContext (comment, Comment) }
   "//"   { tok Comment ==> pushContext (linecomment, Comment) }
