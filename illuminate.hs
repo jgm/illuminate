@@ -36,8 +36,8 @@ main = do
                   then monochrome
                   else colorful
   if "-html" `elem` opts
-     then putStr $ showHtml $ style << cssFor style' +++
-                   pre ! [theclass "sourceCode"] << toHtmlCSS tokens 
+     then putStr $ showHtml $
+                   pre ! [theclass "sourceCode"] << toHtmlCSSInline style' tokens 
      else putStr $ toANSI style' tokens
 
 usageAndExit :: IO ()

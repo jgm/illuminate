@@ -1,5 +1,5 @@
 module Text.Highlighting.Illuminate.Format (Style, Styling(..), Color(..),
-         colorful, monochrome, toANSI, toHtmlCSS, cssFor) where
+         colorful, monochrome, toANSI, toHtmlCSS, toHtmlCSSInline, cssFor) where
 import Text.Highlighting.Illuminate.Types
 import qualified Language.Haskell.HsColour.ANSI as ANSI
 import Data.Sequence (empty, (<|))
@@ -114,24 +114,31 @@ monochrome t =
     _         -> []
 
 toANSI :: Style -> Tokens -> String
-toANSI styl = F.concatMap tokenToANSI . consolidate
- where tokenToANSI (t,s) = ANSI.highlight (map toANSIHighlight $ styl t) s
+toANSI style' = F.concatMap tokenToANSI . consolidate
+ where tokenToANSI (t,s) = ANSI.highlight (map toANSIHighlight $ style' t) s
 
 toHtmlCSS :: Tokens -> [Html]
-toHtmlCSS = F.toList . fmap go . consolidate
+toHtmlCSS = map go . F.toList . consolidate
   where go (Whitespace, s) = stringToHtml s
         go (Plain, s)      = stringToHtml s
         go (x, s)          = thespan ! [theclass $ show x] << s
 
+toHtmlCSSInline :: Style -> Tokens -> [Html]
+toHtmlCSSInline style' = map go . F.toList . consolidate
+  where go (t, s) = let styles = map stylingToCSSProperty $ style' t
+                    in  if null styles
+                           then stringToHtml s
+                           else thespan ! [thestyle $ concat styles] << s
+
 stylingToCSSProperty :: Styling -> String
 stylingToCSSProperty h =
   case h of
-    Bold          -> "font-weight: bold; "
-    Italic        -> "font-style: italic; " 
-    Underline     -> "text-decoration: underline; "
-    Fixed         -> "font-family: monospace; "
-    Foreground c  -> "color: " ++ toCSSColor c ++ "; "
-    Background c  -> "background-color: " ++ toCSSColor c ++ "; "
+    Bold          -> "font-weight: bold;"
+    Italic        -> "font-style: italic;" 
+    Underline     -> "text-decoration: underline;"
+    Fixed         -> "font-family: monospace;"
+    Foreground c  -> "color: " ++ toCSSColor c ++ ";"
+    Background c  -> "background-color: " ++ toCSSColor c ++ ";"
 
 cssFor :: Style -> String
 cssFor colors =
@@ -142,7 +149,7 @@ cssFor colors =
  \td.sourceCode { padding-left: 5px; }\n" ++
  concatMap (\tokType -> "pre.sourceCode span." ++ show tokType ++ " { " ++
                         cssProps tokType ++ "}\n") allTokTypes
-    where cssProps t = concatMap stylingToCSSProperty (colors t)
+    where cssProps t = unwords $ map stylingToCSSProperty (colors t)
           allTokTypes = [ Whitespace
                         , Keyword
                         , Symbol
