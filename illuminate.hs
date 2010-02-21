@@ -32,10 +32,13 @@ main = do
   let tokens = case tokenize (lexerByExtension lang') s of
                     Right toks  -> toks
                     Left err    -> error $ show err
+  let style' = if "-mono" `elem` opts
+                  then monochrome
+                  else colorful
   if "-html" `elem` opts
-     then putStr $ showHtml $ style << cssFor defaultColors +++
+     then putStr $ showHtml $ style << cssFor style' +++
                    pre ! [theclass "sourceCode"] << toHtmlCSS tokens 
-     else putStr $ toANSI defaultColors tokens
+     else putStr $ toANSI style' tokens
 
 usageAndExit :: IO ()
 usageAndExit = do
