@@ -17,9 +17,11 @@ add other languages
   x html
   x javascript
   x better records for representing languages w/ extension info - see pygments
-  
+  x add processing with regex to split up a token rather than overusing states
+
+  _ more flexible formatting options
+  _ html: handle nested comments properly
   _ beef up illuminate to take options
-  _ add processing with regex to split up a token rather than overusing states
 
   _ GNU Make
 
