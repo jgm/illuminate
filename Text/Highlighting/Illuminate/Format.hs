@@ -1,10 +1,11 @@
 module Text.Highlighting.Illuminate.Format (Style, Styling(..), Color(..),
-         colorful, monochrome, toANSI, toHtmlCSS, toHtmlCSSInline, cssFor) where
+         colorful, monochrome, toANSI, toHtmlCSS, toHtmlCSSInline, cssFor, toHtmlInline) where
 import Text.Highlighting.Illuminate.Types
 import qualified Language.Haskell.HsColour.ANSI as ANSI
 import Data.Sequence (empty, (<|))
 import qualified Data.Foldable as F
-import Text.XHtml
+import qualified Text.XHtml as XHtml
+import qualified Text.Html as Html
 import Data.Char (toLower)
 
 -- | Collapse adjacent tokens with the same type.
@@ -117,18 +118,32 @@ toANSI :: Style -> Tokens -> String
 toANSI style' = F.concatMap tokenToANSI . consolidate
  where tokenToANSI (t,s) = ANSI.highlight (map toANSIHighlight $ style' t) s
 
-toHtmlCSS :: Tokens -> [Html]
+toHtmlCSS :: Tokens -> [XHtml.Html]
 toHtmlCSS = map go . F.toList . consolidate
-  where go (Whitespace, s) = stringToHtml s
-        go (Plain, s)      = stringToHtml s
-        go (x, s)          = thespan ! [theclass $ show x] << s
+  where go (Whitespace, s) = XHtml.stringToHtml s
+        go (Plain, s)      = XHtml.stringToHtml s
+        go (x, s)          = XHtml.thespan XHtml.! [XHtml.theclass $ show x] XHtml.<< s
 
-toHtmlCSSInline :: Style -> Tokens -> [Html]
+toHtmlCSSInline :: Style -> Tokens -> [XHtml.Html]
 toHtmlCSSInline style' = map go . F.toList . consolidate
   where go (t, s) = let styles = map stylingToCSSProperty $ style' t
                     in  if null styles
-                           then stringToHtml s
-                           else thespan ! [thestyle $ concat styles] << s
+                           then XHtml.stringToHtml s
+                           else XHtml.thespan XHtml.! [XHtml.thestyle $ concat styles] XHtml.<< s
+
+toHtmlInline :: Style -> Tokens -> [Html.Html]
+toHtmlInline style' = map go . F.toList . consolidate
+  where go (t, s) = foldl (flip ($)) (Html.stringToHtml s) (map stylingToHtmlTag $ style' t)
+
+stylingToHtmlTag :: Styling -> Html.Html -> Html.Html
+stylingToHtmlTag h =
+  case h of
+    Bold          -> Html.bold
+    Italic        -> Html.italics
+    Underline     -> Html.underline
+    Fixed         -> id
+    Foreground c  -> Html.font Html.! [Html.color $ toCSSColor c]
+    Background c  -> Html.font Html.! [Html.bgcolor $ toCSSColor c]
 
 stylingToCSSProperty :: Styling -> String
 stylingToCSSProperty h =

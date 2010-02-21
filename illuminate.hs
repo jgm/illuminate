@@ -1,7 +1,7 @@
 {-# LANGUAGE CPP #-}
 import Text.Highlighting.Illuminate
 import System.Environment
-import Text.XHtml
+import Text.Html
 import Control.Monad
 -- Note: ghc >= 6.12 (base >=4.2) supports unicode through iconv
 -- So we use System.IO.UTF8 only if we have an earlier version
@@ -36,8 +36,8 @@ main = do
                   then monochrome
                   else colorful
   if "-html" `elem` opts
-     then putStr $ showHtml $
-                   pre ! [theclass "sourceCode"] << toHtmlCSSInline style' tokens 
+     then putStr $ renderHtml $
+                   pre ! [theclass "sourceCode"] << toHtmlInline style' tokens 
      else putStr $ toANSI style' tokens
 
 usageAndExit :: IO ()
