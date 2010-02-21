@@ -20,7 +20,7 @@ add other languages
   x add processing with regex to split up a token rather than overusing states
 
   x more flexible formatting options
-  x html: handle nested comments properly
+  
   _ add formatting functions for latex, groff man
   _ beef up illuminate to take options
 

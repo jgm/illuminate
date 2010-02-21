@@ -23,7 +23,6 @@ tokens :-
 
 <comment> {
  [^ \-]+      { tok Comment }
- "<!--"       { tok Comment ==> pushContext (comment,Comment) }
  "-->"        { tok Comment ==> popContext }
  \-           { tok Comment }
 }
