@@ -1,7 +1,8 @@
 {-# LANGUAGE CPP #-}
 import Text.Highlighting.Illuminate
 import System.Environment
-import Text.Html
+import qualified Text.Html as Html
+import qualified Text.XHtml as XHtml
 import Control.Monad
 -- Note: ghc >= 6.12 (base >=4.2) supports unicode through iconv
 -- So we use System.IO.UTF8 only if we have an earlier version
@@ -35,10 +36,17 @@ main = do
   let style' = if "-mono" `elem` opts
                   then monochrome
                   else colorful
-  if "-html" `elem` opts
-     then putStr $ renderHtml $
-                   pre ! [theclass "sourceCode"] << toHtmlInline style' tokens 
-     else putStr $ toANSI style' tokens
+  putStr $ if "-html" `elem` opts
+              then Html.renderHtml $ Html.pre Html.! [Html.theclass "sourceCode"] Html.<<
+                         toHtmlInline style' tokens 
+              else if "-xhtml" `elem` opts
+                   then if "-css" `elem` opts
+                        then XHtml.showHtml $ XHtml.style XHtml.<< cssFor style' XHtml.+++
+                                 XHtml.pre XHtml.! [XHtml.theclass "sourceCode"] XHtml.<<
+                                 toHtmlCSS tokens
+                        else XHtml.showHtml $ XHtml.pre XHtml.! [XHtml.theclass "sourceCode"] XHtml.<<
+                                 toHtmlCSSInline style' tokens
+                   else toANSI style' tokens
 
 usageAndExit :: IO ()
 usageAndExit = do
