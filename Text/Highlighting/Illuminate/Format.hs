@@ -1,4 +1,4 @@
-module Text.Highlighting.Illuminate.Format (Colorer, defaultColors, bwColors, asANSI, asHtmlCSS, cssFor) where
+module Text.Highlighting.Illuminate.Format (Colorer, defaultColors, bwColors, toANSI, toHtmlCSS, cssFor) where
 import Text.Highlighting.Illuminate.Types
 import Language.Haskell.HsColour.ANSI (highlight, Highlight(..), Colour(..))
 import Data.Sequence (empty, (<|))
@@ -63,13 +63,13 @@ bwColors t = case t of
                 Alert     -> [Bold]
                 _         -> []
 
-asANSI :: Colorer -> Tokens -> String
-asANSI colors = F.concatMap go . consolidate
+toANSI :: Colorer -> Tokens -> String
+toANSI colors = F.concatMap go . consolidate
  where go = hilite . (\(t,s) -> (colors t, s))
        hilite (hls, s) = highlight hls s
 
-asHtmlCSS :: Tokens -> [Html]
-asHtmlCSS = F.toList . fmap go . consolidate
+toHtmlCSS :: Tokens -> [Html]
+toHtmlCSS = F.toList . fmap go . consolidate
   where go (Whitespace, s) = stringToHtml s
         go (Plain, s)      = stringToHtml s
         go (x, s)          = thespan ! [theclass $ show x] << s
