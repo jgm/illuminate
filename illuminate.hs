@@ -35,7 +35,7 @@ main = do
   if "-html" `elem` opts
      then putStr $ showHtml $ style << defaultCSS +++
                    pre ! [theclass "sourceCode"] << asHtmlCSS tokens 
-     else putStr $ asANSI tokens
+     else putStr $ asANSI True tokens
 
 usageAndExit :: IO ()
 usageAndExit = do
