@@ -33,9 +33,9 @@ main = do
                     Right toks  -> toks
                     Left err    -> error $ show err
   if "-html" `elem` opts
-     then putStr $ showHtml $ style << defaultCSS +++
+     then putStr $ showHtml $ style << cssFor defaultColors +++
                    pre ! [theclass "sourceCode"] << asHtmlCSS tokens 
-     else putStr $ asANSI True tokens
+     else putStr $ asANSI defaultColors tokens
 
 usageAndExit :: IO ()
 usageAndExit = do

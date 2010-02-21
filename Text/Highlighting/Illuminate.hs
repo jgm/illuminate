@@ -1,4 +1,4 @@
-module Text.Highlighting.Illuminate ( tokenize, languages, lexerByName, lexerByExtension, asANSI, asHtmlCSS, defaultCSS ) where
+module Text.Highlighting.Illuminate ( tokenize, languages, lexerByName, lexerByExtension, module Text.Highlighting.Illuminate.Format ) where
 import Data.Char (toLower)
 import Data.List (find)
 import Data.Sequence (singleton)
