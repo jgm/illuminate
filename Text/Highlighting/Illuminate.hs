@@ -15,6 +15,7 @@ import qualified Text.Highlighting.Illuminate.HTML as HTML
 import qualified Text.Highlighting.Illuminate.Java as Java
 import qualified Text.Highlighting.Illuminate.Javascript as Javascript
 import qualified Text.Highlighting.Illuminate.LiterateHaskell as LiterateHaskell
+import qualified Text.Highlighting.Illuminate.Python as Python
 
 tokenize :: Maybe Lexer -> String -> Either String Tokens
 tokenize (Just lexer) source = scan lexer source
@@ -42,4 +43,5 @@ lexers = [ Haskell.lexer
          , CSharp.lexer
          , CSS.lexer
          , Cabal.lexer
+         , Python.lexer
          ]

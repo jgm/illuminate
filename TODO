@@ -20,7 +20,9 @@ add other languages
   x add processing with regex to split up a token rather than overusing states
 
   x more flexible formatting options
-  
+  _ python (need to add multiline strings/comments, possibly change
+     some other things)
+
   _ add formatting functions for latex, groff man
   _ beef up illuminate to take options
 
