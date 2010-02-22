@@ -10,7 +10,7 @@ import Control.Monad
 import Prelude
 import System.IO (hPutStrLn)
 #else
-import Prelude hiding (putStr, readFile)
+import Prelude hiding (putStr, putStrLn, readFile)
 import System.IO.UTF8
 #endif
 import System.IO (stderr)
@@ -25,6 +25,8 @@ main = do
   let opts = filter isOpt args
   let fnames = filter (not . isOpt) args
  
+  when ("-list" `elem` opts) $ mapM_ putStrLn languages >> exitWith ExitSuccess
+  
   when (null fnames) $ usageAndExit
 
   let file = head fnames
@@ -51,6 +53,6 @@ main = do
 usageAndExit :: IO ()
 usageAndExit = do
   prog <- getProgName
-  hPutStrLn stderr $ "Usage:  " ++ prog ++ " [-html|-ansi] file"
+  hPutStrLn stderr $ "Usage:  " ++ prog ++ " [-html|-ansi|-xhtml] [-css] [-mono] [-list] file"
   exitWith $ ExitFailure 1
 
