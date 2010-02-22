@@ -16,12 +16,18 @@ add other languages
   
   x html
   x javascript
+  x python
   x better records for representing languages w/ extension info - see pygments
   x add processing with regex to split up a token rather than overusing states
 
   x more flexible formatting options
-  _ python (need to add multiline strings/comments, possibly change
-     some other things)
+
+  _ improve metadata for lexers, see pygmentize:
+     name = 'Python'
+    aliases = ['python', 'py']
+    filenames = ['*.py', '*.pyw', '*.sc', 'SConstruct', 'SConscript']
+    mimetypes = ['text/x-python', 'application/x-python']
+
 
   _ add formatting functions for latex, groff man
   _ beef up illuminate to take options

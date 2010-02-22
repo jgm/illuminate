@@ -21,11 +21,21 @@ $hexdigit = [$digit A-F a-f]
             "if"|"in"|"is"|"lambda"|"not"|"or"|"pass"|
            "print"|"raise"|"return"|"try"|"while")
 @alert = (TODO|FIXME|BUG)[\:]?
-@string = \" ([^ \" \\] | \\ .)* \" 
-        | \' ([^ \' \\] | \\ .)* \'
+@stringprefix = ([uU]|[rR]|[uU][rR]|[rR][uU])
+@string = @stringprefix?
+          ( \" ([^ \" \\] | \\ .)* \" 
+          | \' ([^ \' \\] | \\ .)* \')
 
 tokens :-
 
+<strsq>  {
+  \'\'\'    { tok String ==> popContext }
+  $white+   { tok Whitespace }
+}
+<strdq>  {
+  \"\"\"    { tok String ==> popContext }
+  $white+   { tok Whitespace }
+}
 <linecomment> {
   @alert { tok Alert }
   \n     { tok Whitespace ==> popContext } 
@@ -34,27 +44,19 @@ tokens :-
 <0> {
   \#   { tok Comment ==> pushContext (linecomment, Comment) }
   "import"|"from"        { tok Preproc }
+  $white ^ "def" $white+ [$alpha \_] $wordchar* $white* / \(
+                         { split "(def)([ \t]*)([^ \t]*)([ \t]*)"
+                           [Keyword, Whitespace, Function, Whitespace] }
   @keyword / ~$wordchar  { tok Keyword }
   @number                { tok Number }
-
--- TODO: multiline comments/strings
--- comment delim '^([[:space:]]*\'{3})' '(\'{3})' multiline 
--- comment delim '^([[:space:]]*\"{3})' '(\"{3})' multiline 
-
--- comment = '^([[:space:]]*\'(?:[^\\\']|\\.)*\'[[:space:]]*|[[:space:]]*\"(?:[^\\\"]|\\.)*\"[[:space:]]*)$'
-
--- string delim '([[:space:]]*\'{3})' '(\'{3})' multiline 
--- string delim '([[:space:]]*\"{3})' '(\"{3})' multiline 
-
-
-
+  \` [^ \`] \`           { tok String }
+  @stringprefix? \"\"\"  { tok String ==> pushContext (strdq, String) } 
+  @stringprefix? \'\'\'  { tok String ==> pushContext (strsq, String) } 
   @string                { tok String }
   $symbol                { tok Symbol }
   [\{ \}]                { tok Symbol }
-  [$alpha \_] $wordchar* $white* / \( { tok Function }
   [$alpha \_]$wordchar*  { tok VarId }
 }
-
 
  .           { plain }
  \n          { tok Whitespace }
