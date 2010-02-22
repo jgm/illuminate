@@ -18,6 +18,7 @@ add other languages
   x more flexible formatting options
 
   _ improve metadata for lexers, see pygmentize:
+    (use System.FilePath.GlobPattern from FileManip package)
      name = 'Python'
     aliases = ['python', 'py']
     filenames = ['*.py', '*.pyw', '*.sc', 'SConstruct', 'SConscript']
