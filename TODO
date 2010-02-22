@@ -8,11 +8,6 @@ add other languages
   x lhs
   x java
   x alex
-  _ lex
-  _ yacc
-  _ happy  -- all of these on same pattern, w/ same extensions (yacc/happy, lex/alex)
-           -- handle this by having scanner put the language name in state
-           -- the handlers for code sections { } can then call the appropriate scanner
   
   x html
   x javascript
@@ -28,41 +23,44 @@ add other languages
     filenames = ['*.py', '*.pyw', '*.sc', 'SConstruct', 'SConscript']
     mimetypes = ['text/x-python', 'application/x-python']
 
+  _ latex
+  _ xml
+  _ yaml
+  _ ruby
+  _ erb
+  _ php
+  _ sh
+  _ GNU Make
+  _ perl
+  _ lua
+  _ erlang
+  _ fortran
+  _ ocaml
+  _ scheme
+  _ clojure
+  _ commonlisp
+  _ assembly
 
   _ add formatting functions for latex, groff man
   _ beef up illuminate to take options
 
-  _ GNU Make
 
-  _ latex
-  _ xml
   _ sql
 
-  _ ruby
-  _ erb
-  _ perl
-  _ python
-  _ lua
-  _ php
-  _ assembly
-  _ clojure
-  _ commonlisp
   _ d
-  _ erlang
-  _ fortran
   _ llvm
   _ objectivec
-  _ ocaml
   _ smalltalk
   _ prolog
   _ scala
   _ tcl
   _ vb
-  _ bash
   _ awk
   _ diff
-  _ yaml
   _ xlst
-  _ scheme
-_ figure out way to reuse code sections?
+  _ lex
+  _ yacc
+  _ happy  -- all of these on same pattern, w/ same extensions (yacc/happy, lex/alex)
+           -- handle this by having scanner put the language name in state
+           -- the handlers for code sections { } can then call the appropriate scanner
 
