@@ -75,7 +75,7 @@ tokens :-
 lexer :: Lexer
 lexer = Lexer { name = "Java"
               , aliases = ["java"]
-              , extensions = ["java"]
+              , filenames = ["*.java"]
               , scan = scanner }
 }
 

@@ -65,6 +65,6 @@ tokens :-
 lexer :: Lexer
 lexer = Lexer { name = "Python"
               , aliases = ["python","py"]
-              , extensions = ["py"]
+              , filenames = ["*.py", "*.pyw", "*.sc", "SConstruct", "SConscript"]
               , scan = scanner }
 }

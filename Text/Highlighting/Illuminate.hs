@@ -1,7 +1,9 @@
-module Text.Highlighting.Illuminate ( tokenize, languages, lexerByName, lexerByExtension, module Text.Highlighting.Illuminate.Format ) where
+module Text.Highlighting.Illuminate ( tokenize, languages, lexerByName,
+  lexerByFilename, module Text.Highlighting.Illuminate.Format ) where
 import Data.Char (toLower)
 import Data.List (find)
 import Data.Sequence (singleton)
+import System.FilePath.GlobPattern
 import Text.Highlighting.Illuminate.Types
 import Text.Highlighting.Illuminate.Format
 import qualified Text.Highlighting.Illuminate.Alex as Alex
@@ -28,8 +30,9 @@ lexerByName :: String -> Maybe Lexer
 lexerByName s = find matchName lexers
   where matchName l = map toLower s `elem` (map toLower (name l) : aliases l)
 
-lexerByExtension :: String -> Maybe Lexer
-lexerByExtension s = find (\l -> s `elem` extensions l) lexers
+lexerByFilename :: String -> Maybe Lexer
+lexerByFilename s = find matchFilename lexers
+  where matchFilename l = any (\glob -> s ~~ glob) (filenames l)
 
 lexers :: [Lexer]
 lexers = [ Haskell.lexer

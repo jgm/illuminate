@@ -120,6 +120,6 @@ tokens :-
 lexer :: Lexer
 lexer = Lexer { name = "Haskell"
               , aliases = ["haskell"]
-              , extensions = ["hs"]
+              , filenames = ["*.hs"]
               , scan = scanner }
 }

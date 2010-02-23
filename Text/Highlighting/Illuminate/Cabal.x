@@ -147,6 +147,6 @@ main :-
 lexer :: Lexer
 lexer = Lexer { name = "Cabal"
               , aliases = ["cabal"]
-              , extensions = ["cabal"]
+              , filenames = ["*.cabal"]
               , scan = scanner }
 }

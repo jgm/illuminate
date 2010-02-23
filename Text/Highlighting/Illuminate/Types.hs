@@ -1,4 +1,5 @@
 module Text.Highlighting.Illuminate.Types (Token, Tokens, TokenType(..), Scanner, Lexer(..)) where
+import System.FilePath.GlobPattern (GlobPattern)
 import Data.Sequence (Seq)
 
 data TokenType =
@@ -34,6 +35,5 @@ type Scanner = String -> Either String Tokens
 
 data Lexer = Lexer { name       :: String
                    , aliases    :: [String]
-                   , extensions :: [String]
-                   , mimeTypes  :: [String]
+                   , filenames  :: [GlobPattern]
                    , scan       :: Scanner }

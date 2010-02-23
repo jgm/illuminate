@@ -79,7 +79,7 @@ tokens :-
 lexer :: Lexer
 lexer = Lexer { name = "CSS"
               , aliases = ["css"]
-              , extensions = ["css"]
+              , filenames = ["*.css"]
               , scan = scanner }
 }
 

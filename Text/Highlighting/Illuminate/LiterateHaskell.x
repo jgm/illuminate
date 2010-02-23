@@ -138,7 +138,7 @@ tokens :-
 lexer :: Lexer
 lexer = Lexer { name = "Literate Haskell"
               , aliases = ["literatehaskell","lhs"]
-              , extensions = ["lhs"]
+              , filenames = ["*.lhs"]
               , scan = scanner }
 }
 

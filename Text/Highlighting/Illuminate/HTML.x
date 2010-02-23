@@ -73,7 +73,7 @@ tokens :-
 lexer :: Lexer
 lexer = Lexer { name = "HTML"
               , aliases = ["html","xhtml"]
-              , extensions = ["html","xhtml","htm"]
+              , filenames = ["*.html","*.xhtml","*.htm"]
               , scan = scanner }
 }
 

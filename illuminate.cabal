@@ -32,7 +32,7 @@ Flag executable
 
 Library
   Build-Depends:     base >= 3 && < 5, containers, xhtml, html, utf8-string, hscolour,
-                     regex-tdfa
+                     regex-tdfa, FileManip
   Build-Tools:       alex >= 2 && < 3
   Exposed-Modules:   Text.Highlighting.Illuminate
                      Text.Highlighting.Illuminate.Types
@@ -54,7 +54,7 @@ Library
 
 Executable illuminate
   Main-Is:           illuminate.hs
-  Build-depends:     base >= 3 && <5, array, containers, xhtml, html, filepath
+  Build-depends:     base >= 3 && <5, array, containers, xhtml, html
   Other-modules:     Text.Highlighting.Illuminate.Alex
                      Text.Highlighting.Illuminate.C
                      Text.Highlighting.Illuminate.Cabal

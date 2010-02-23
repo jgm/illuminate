@@ -96,7 +96,7 @@ tokens :-
 lexer :: Lexer
 lexer = Lexer { name = "C#"
               , aliases = ["c#","csharp"]
-              , extensions = ["cs"]
+              , filenames = ["*.cs"]
               , scan = scanner }
 }
 

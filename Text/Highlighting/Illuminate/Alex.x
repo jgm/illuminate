@@ -37,6 +37,6 @@ tokens :-
 lexer :: Lexer
 lexer = Lexer { name = "Alex"
               , aliases = ["alex"]
-              , extensions = ["x"]
+              , filenames = ["*.x"]
               , scan = scanner }
 }

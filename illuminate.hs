@@ -15,7 +15,6 @@ import System.IO.UTF8
 #endif
 import System.IO (stderr)
 import System.Exit
-import System.FilePath
 
 main :: IO ()
 main = do
@@ -30,9 +29,8 @@ main = do
   when (null fnames) $ usageAndExit
 
   let file = head fnames
-  let lang' = dropWhile (=='.') $ takeExtension file
   s <- readFile file
-  let tokens = case tokenize (lexerByExtension lang') s of
+  let tokens = case tokenize (lexerByFilename file) s of
                     Right toks  -> toks
                     Left err    -> error $ show err
   let style' = if "-mono" `elem` opts

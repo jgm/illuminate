@@ -77,6 +77,6 @@ tokens :-
 lexer :: Lexer
 lexer = Lexer { name = "Javascript"
               , aliases = ["javascript","js"]
-              , extensions = ["js"]
+              , filenames = ["*.js"]
               , scan = scanner }
 }
