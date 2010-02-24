@@ -88,6 +88,7 @@ colorful t =
     Property  -> [Foreground Green, Underline]
     Tag       -> [Foreground Blue]
     Entity    -> [Foreground Green]
+    Math      -> [Foreground Green]
     Alert     -> [Background Aqua]
     _         -> []
 
@@ -111,6 +112,7 @@ monochrome t =
     Property  -> [Underline]
     Tag       -> []
     Entity    -> []
+    Math      -> []
     Alert     -> [Bold]
     _         -> []
 
@@ -184,5 +186,6 @@ cssFor colors =
                         , Property
                         , Tag
                         , Entity
+                        , Math
                         , Alert ]
 

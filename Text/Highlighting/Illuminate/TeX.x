@@ -16,19 +16,29 @@ $bracket = [\{ \}]
  
 tokens :-
 
-<beginend> {
+<label> {
  \{          { tok CBracket }
- $alpha $alphanum*  { tok Type }
  \}          { tok CBracket ==> popContext }
 }
 
-<0> {
+<math> {
+ \\ [\$ \\]  { tok Symbol }
+ "$$"        { tok Math ==> popContext }
+ \$          { tok Math ==> popContext }
+ "\]"        { tok Math ==> popContext }
+}
+
+<0, math1> {
   \% .*      { tok Comment }
   @string    { tok String }
-  \\ ("begin"|"end")  { tok Keyword ==> pushContext (beginend, Type) }
+  \\ ("begin"|"end")  { tok Keyword ==> pushContext (label, Type) }
+  \\ ("ref"|"label")  { tok Keyword ==> pushContext (label, Label) }
   \\ $alpha $alphanum* { tok Keyword }
   \\ [\' \` \^ \" \~ \= \.]   { tok Keyword }
   $bracket          { tok CBracket }
+  "$$"              { tok Math ==> pushContext (math, Math) }
+  \$                { tok Math ==> pushContext (math, Math) }
+  "\["              { tok Math ==> pushContext (math, Math) }
   $symbol           { tok Symbol }
 }
 

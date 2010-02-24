@@ -22,6 +22,7 @@ data TokenType =
   | Property
   | Tag
   | Entity
+  | Math
   | Alert
   | Plain
   | EOF
