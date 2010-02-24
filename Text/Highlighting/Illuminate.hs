@@ -16,6 +16,7 @@ import qualified Text.Highlighting.Illuminate.Haskell as Haskell
 import qualified Text.Highlighting.Illuminate.HTML as HTML
 import qualified Text.Highlighting.Illuminate.Java as Java
 import qualified Text.Highlighting.Illuminate.Javascript as Javascript
+import qualified Text.Highlighting.Illuminate.TeX as TeX
 import qualified Text.Highlighting.Illuminate.LiterateHaskell as LiterateHaskell
 import qualified Text.Highlighting.Illuminate.Python as Python
 
@@ -35,16 +36,17 @@ lexerByFilename s = find matchFilename lexers
   where matchFilename l = any (\glob -> s ~~ glob) (filenames l)
 
 lexers :: [Lexer]
-lexers = [ Haskell.lexer
-         , LiterateHaskell.lexer
-         , Alex.lexer
-         , HTML.lexer
+lexers = [ Alex.lexer
          , C.lexer
-         , Java.lexer
-         , Javascript.lexer
+         , Cabal.lexer
          , CPlusPlus.lexer
          , CSharp.lexer
          , CSS.lexer
-         , Cabal.lexer
+         , Haskell.lexer
+         , HTML.lexer
+         , Java.lexer
+         , Javascript.lexer
+         , LiterateHaskell.lexer
+         , TeX.lexer
          , Python.lexer
          ]
