@@ -19,8 +19,10 @@ add other languages
 
   x improve metadata for lexers, see pygmentize:
 
-  _ add bibtex stuff to tex parser; test with latex, context, bibtex
-  
+  x add bibtex stuff to tex parser; test with latex, context, bibtex
+ 
+  _ reduce reliance on split, which is slow...
+
   _ xml
   _ yaml
   _ ruby
