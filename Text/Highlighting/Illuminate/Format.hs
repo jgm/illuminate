@@ -72,7 +72,7 @@ colorful :: Style
 colorful t =
   case t of
     Keyword   -> [Foreground Green, Underline]
-    Symbol    -> [Foreground Red]
+    Symbol    -> []
     String    -> [Foreground Green]
     Char      -> [Foreground Red]
     Number    -> [Foreground Teal]
