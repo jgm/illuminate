@@ -8,24 +8,27 @@ module Text.Highlighting.Illuminate.TeX where
 $alpha = [A-Za-z]
 $digit = [0-9]
 $alphanum = [$alpha $digit]
-$symbol = [\~ \# \$ \% \^ \& \_ \{ \} \\ \] \[]
-
+$symbol = [\~ \# \$ \% \^ \& \_ \\ \] \[]
+$bracket = [\{ \}]
 @string = \" ([^ \" \\] | \\ .)* \" 
         | "``" ([^ \' \\] | \' [^ \'] | \\ .)* "''"
         | "`" ([^ \' \\] | \\ .)* "'"
  
-@keyword = ("x"|"y")
-
 tokens :-
 
-<0,bracketed> {
+<beginend> {
+ \{          { tok CBracket }
+ $alpha $alphanum*  { tok Type }
+ \}          { tok CBracket ==> popContext }
+}
+
+<0> {
   \% .*      { tok Comment }
   @string    { tok String }
-  \@ $alpha $alphanum* { tok Type }
+  \\ ("begin"|"end")  { tok Keyword ==> pushContext (beginend, Type) }
   \\ $alpha $alphanum* { tok Keyword }
-  \\ ("begin"|"end") \{ $alpha $alphanum* \}
-     { split "(\\\\begin|\\\\end)({)([A-Za-z0-9]*)(})" [Keyword, Symbol, Type, Symbol] }
-  \\ .              { tok Keyword }
+  \\ [\' \` \^ \" \~ \= \.]   { tok Keyword }
+  $bracket          { tok CBracket }
   $symbol           { tok Symbol }
 }
 
@@ -34,8 +37,8 @@ tokens :-
 
 {
 lexer :: Lexer
-lexer = Lexer { name = "TeX (including LaTeX, ConTeXt, BibTeX)"
-              , aliases = ["tex","latex","context","bibtex"]
-              , filenames = ["*.tex","*.latex","*.ctx","*.bib"]
+lexer = Lexer { name = "TeX"
+              , aliases = ["tex","latex","context"]
+              , filenames = ["*.tex","*.latex","*.ctx"]
               , scan = scanner }
 }

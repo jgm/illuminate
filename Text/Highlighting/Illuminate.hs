@@ -7,6 +7,7 @@ import System.FilePath.GlobPattern
 import Text.Highlighting.Illuminate.Types
 import Text.Highlighting.Illuminate.Format
 import qualified Text.Highlighting.Illuminate.Alex as Alex
+import qualified Text.Highlighting.Illuminate.BibTeX as BibTeX
 import qualified Text.Highlighting.Illuminate.C as C
 import qualified Text.Highlighting.Illuminate.Cabal as Cabal
 import qualified Text.Highlighting.Illuminate.CPlusPlus as CPlusPlus
@@ -16,9 +17,9 @@ import qualified Text.Highlighting.Illuminate.Haskell as Haskell
 import qualified Text.Highlighting.Illuminate.HTML as HTML
 import qualified Text.Highlighting.Illuminate.Java as Java
 import qualified Text.Highlighting.Illuminate.Javascript as Javascript
-import qualified Text.Highlighting.Illuminate.TeX as TeX
 import qualified Text.Highlighting.Illuminate.LiterateHaskell as LiterateHaskell
 import qualified Text.Highlighting.Illuminate.Python as Python
+import qualified Text.Highlighting.Illuminate.TeX as TeX
 
 tokenize :: Maybe Lexer -> String -> Either String Tokens
 tokenize (Just lexer) source = scan lexer source
@@ -37,6 +38,7 @@ lexerByFilename s = find matchFilename lexers
 
 lexers :: [Lexer]
 lexers = [ Alex.lexer
+         , BibTeX.lexer
          , C.lexer
          , Cabal.lexer
          , CPlusPlus.lexer
@@ -47,6 +49,6 @@ lexers = [ Alex.lexer
          , Java.lexer
          , Javascript.lexer
          , LiterateHaskell.lexer
-         , TeX.lexer
          , Python.lexer
+         , TeX.lexer
          ]
