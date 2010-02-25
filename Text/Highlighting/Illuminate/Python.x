@@ -40,13 +40,13 @@ tokens :-
   @alert { tok Alert }
   \n     { tok Whitespace ==> popContext } 
 }
-
+<def> {
+  [$alpha \_] $wordchar*   { tok Function ==> popContext }
+}
 <0> {
   \#   { tok Comment ==> pushContext (linecomment, Comment) }
   "import"|"from"        { tok Preproc }
-  $white ^ "def" $white+ [$alpha \_] $wordchar* $white* / \(
-                         { split "(def)([ \t]*)([^ \t]*)([ \t]*)"
-                           [Keyword, Whitespace, Function, Whitespace] }
+  $white ^ "def" / $white  { tok Keyword ==> pushContext (def, Plain) }
   @keyword / ~$wordchar  { tok Keyword }
   @number                { tok Number }
   \` [^ \`] \`           { tok String }
