@@ -45,7 +45,7 @@ tokens :-
 }
 <0> {
   \#   { tok Comment ==> pushContext (linecomment, Comment) }
-  "import"|"from"        { tok Preproc }
+  "import"|"from" / $white { tok Preproc }
   $white ^ "def" / $white  { tok Keyword ==> pushContext (def, Plain) }
   @keyword / ~$wordchar  { tok Keyword }
   @number                { tok Number }
@@ -56,6 +56,7 @@ tokens :-
   $symbol                { tok Symbol }
   [\{ \}]                { tok Symbol }
   [$alpha \_]$wordchar*  { tok VarId }
+  $white+                { tok Whitespace }
 }
 
  .           { plain }

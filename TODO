@@ -24,9 +24,10 @@ add other languages
   x reduce reliance on split, which is slow...
 
   x xml
-  _ yaml
-  _ ruby
+  x ruby
+
   _ erb
+  _ yaml
   _ php
   _ sh
   _ GNU Make
