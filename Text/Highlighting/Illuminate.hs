@@ -3,6 +3,7 @@ module Text.Highlighting.Illuminate ( tokenize, languages, lexerByName,
 import Data.Char (toLower)
 import Data.List (find)
 import Data.Sequence (singleton)
+import System.FilePath
 import System.FilePath.GlobPattern
 import Text.Highlighting.Illuminate.Types
 import Text.Highlighting.Illuminate.Format
@@ -34,7 +35,7 @@ lexerByName s = find matchName lexers
 
 lexerByFilename :: String -> Maybe Lexer
 lexerByFilename s = find matchFilename lexers
-  where matchFilename l = any (\glob -> s ~~ glob) (filenames l)
+  where matchFilename l = any (\glob -> takeFileName s ~~ glob) (filenames l)
 
 lexers :: [Lexer]
 lexers = [ Alex.lexer
