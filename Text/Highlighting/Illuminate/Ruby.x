@@ -64,6 +64,10 @@ tokens :-
   \` [^ \`] \`           { tok String }
   -- note: #{var} is not a comment:
   \# / [^\{]  { tok Comment ==> pushContext (linecomment, Comment) }
+
+  -- TODO: here docs ... need some way to store and access the end string
+  --  "<<" \-? (@string | $wordchar+)  { tok String ==> pushContext 
+
   $symbol                { tok Symbol }
   [\{ \}]                { tok CBracket }
   [$alpha \_]$wordchar*  { tok VarId }
