@@ -15,6 +15,7 @@ import System.IO.UTF8
 #endif
 import System.IO (stderr)
 import System.Exit
+import Data.List (intercalate)
 
 main :: IO ()
 main = do
@@ -23,8 +24,10 @@ main = do
       isOpt _       = False
   let opts = filter isOpt args
   let fnames = filter (not . isOpt) args
- 
-  when ("-list" `elem` opts) $ mapM_ putStrLn languages >> exitWith ExitSuccess
+  let showLexer l = putStrLn $ name l ++ " (" ++
+        intercalate ", " (aliases l) ++ "): " ++
+        intercalate ", " (filenames l) 
+  when ("-list" `elem` opts) $ mapM_ showLexer lexers >> exitWith ExitSuccess
   
   when (null fnames) $ usageAndExit
 

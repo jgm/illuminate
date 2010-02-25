@@ -1,4 +1,4 @@
-module Text.Highlighting.Illuminate ( tokenize, languages, lexerByName,
+module Text.Highlighting.Illuminate ( tokenize, Lexer(..), lexers, lexerByName,
   lexerByFilename, module Text.Highlighting.Illuminate.Format ) where
 import Data.Char (toLower)
 import Data.List (find)
@@ -27,9 +27,6 @@ import qualified Text.Highlighting.Illuminate.XML as XML
 tokenize :: Maybe Lexer -> String -> Either String Tokens
 tokenize (Just lexer) source = scan lexer source
 tokenize Nothing source = Right $ singleton $ (Plain, source)
-
-languages :: [String]
-languages = map name lexers
 
 lexerByName :: String -> Maybe Lexer
 lexerByName s = find matchName lexers
