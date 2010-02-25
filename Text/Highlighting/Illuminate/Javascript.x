@@ -56,8 +56,8 @@ tokens :-
   @keyword / ~$wordchar  { tok Keyword }
 
   -- these two cases are for /s that do NOT start a regex:
-  @number $white* \/     { split "(.*)([ \\t\\n\\r]*)(\\/)" [Number, Whitespace, Symbol] }
-  [$alpha \_] $wordchar* $white* \/  { split "(.*)([ \\t\\n\\r]*)(\\/)" [VarId, Whitespace, Symbol] }
+  @number / $white* \/   { tok Number }
+  [$alpha \_] $wordchar* / $white* \/  { tok VarId }
 
   @regexp                { tok Regex }
   @number                { tok Number }

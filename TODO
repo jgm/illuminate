@@ -21,7 +21,7 @@ add other languages
 
   x add bibtex stuff to tex parser; test with latex, context, bibtex
  
-  _ reduce reliance on split, which is slow...
+  x reduce reliance on split, which is slow...
 
   _ xml
   _ yaml
