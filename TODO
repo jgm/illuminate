@@ -23,7 +23,7 @@ add other languages
  
   x reduce reliance on split, which is slow...
 
-  _ xml
+  x xml
   _ yaml
   _ ruby
   _ erb
