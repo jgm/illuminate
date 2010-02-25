@@ -17,11 +17,16 @@ tokens :-
  ([^\{ \}]+ | \{ [^ \{ \}]+ \})*  { tokenizeWith Haskell.lexer }
  \}                               { tok CBracket ==> popContext } 
 }
+<context> {
+  \{                              { tok CBracket ==> popContext }
+  $white* \n $white*              { tok Whitespace ==> popContext }
+}
 <0> {
- \< [^>]+ \> ($white* \{)?                { split "(<[^>]+>)( *)({?)" [Function, Whitespace, CBracket] }
+ \< [^>]+ \>                              { tok Function ==> pushContext (context, Plain)}
  ^ \% "wrapper"                           { tok Preproc }
  \\ .                                     { tok Symbol }
- \}                                       { tok CBracket } -- end of context
+ \}                                       { tok CBracket }  -- end context
+ \{                                       { tok CBracket ==> pushContext (haskell, Plain) }
  \$ $wordchar+                            { tok ConId }
  \@ $wordchar+                            { tok ConId }
  ":-"                                     { tok Symbol }
