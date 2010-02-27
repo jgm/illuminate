@@ -2,6 +2,7 @@ import Text.Highlighting.Illuminate.Types
 import Data.Sequence (Seq, (><), (<|), (|>), singleton, viewl, ViewL(..))
 import qualified Data.Sequence as Seq (empty)
 import qualified Data.Foldable as F
+import Data.List (span, break, splitAt, isPrefixOf)
 {-# LINE 1 "templates/wrappers.hs" #-}
 {-# LINE 1 "templates/wrappers.hs" #-}
 {-# LINE 1 "<built-in>" #-}
@@ -227,6 +228,36 @@ popContext toks = do
            setUserState (y:xs)
            alexSetStartCode $ fst y
            return toks
+
+scanForStop :: String -> String -> Int
+scanForStop stop ('\n':xs) = 1 +
+  let (sps, xs') = span (`elem` " \t") xs
+      offset = length sps + length stop
+  in  if stop `isPrefixOf` xs'
+         then case (takeWhile (`elem` " \t") $ drop (length stop) xs') of
+                   ('\n':_)  -> offset
+                   []        -> offset
+                   _         -> offset + scanForStop stop (drop offset xs')
+         else length sps + scanForStop stop xs'
+scanForStop stop (_:xs) = 1 + scanForStop stop xs
+scanForStop stop [] = 0
+
+hereDoc :: Tokens -> Alex Tokens
+hereDoc toks = Alex $ \s ->
+  let inp = alex_inp s
+      unescape ('\\':x:xs) = x : unescape xs
+      unescape (x:xs) = x : unescape xs
+      unescape [] = []
+      unstring = tail . init . unescape
+  in  case viewl toks of
+        ((tt,str) :< empty) | tt `elem` [String, VarId] ->
+            let stop = if tt == String then unstring str else str
+                off = scanForStop stop inp
+                (res, newinp) = splitAt off inp
+                newpos = foldl alexMove (alex_pos s) res
+                s' = s{alex_pos = newpos, alex_inp = newinp, alex_chr = '\n'}
+            in  Right (s', toks |> (String, res))
+        _                   -> Left "hereDoc expecting String or VarId"
 
 (==>) :: (AlexInput -> Int -> Alex a) -> (a -> Alex b) -> (AlexInput -> Int -> Alex b)
 (act1 ==> act2) inp len = do

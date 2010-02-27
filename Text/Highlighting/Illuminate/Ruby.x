@@ -23,8 +23,11 @@ $hexdigit = [$digit A-F a-f]
            "self"|"true"|"__FILE__"|"__LINE__"|"and"|"not"|"or"|"def"|"class"|
            "module"|"catch"|"fail"|"load"|"throw")
 @alert = (TODO|FIXME|BUG)[\:]?
+@singlestring = \' ([^ \' \\] | \\ .)* \'
 @string = ( \" ([^ \" \\] | \\ .)* \" 
-          | \' ([^ \' \\] | \\ .)* \')
+          | @singlestring
+          | \` [^ \`]* \`)
+@identifier = [$alpha \_] $wordchar*
 
 tokens :-
 
@@ -48,7 +51,26 @@ tokens :-
 <def> {
   [$alpha \_] $wordchar*   { tok Function ==> popContext }
 }
-<0> {
+<backtickstring> {
+ \# \{                   { tok CBracket ==> pushContext (interp, Plain) }
+ \\ .                    { tok String } 
+ \`                      { tok String ==> popContext }
+}
+<doublestring> {
+ \# \{                   { tok CBracket ==> pushContext (interp, Plain) }
+ \\ .                    { tok String } 
+ \"                      { tok String ==> popContext }
+}
+<heredoc> {
+  @string                { tok String ==> hereDoc ==> popContext }
+  @identifier            { tok VarId ==> hereDoc ==> popContext } 
+  \# / [^\{]  { tok Comment ==> pushContext (linecomment, Comment) }
+  [ \t]+                 { tok Whitespace }
+  -- if we hit end of line w/o an identifier, exit context
+  \n                     { tok Whitespace ==> popContext }
+}
+<interp>   \}            { tok CBracket ==> popContext }
+<0,interp> {
   ^ "=begin" / [ \t\r\n] { tok Comment ==> pushContext (blockcomment, Comment) }
   "require" / $white     { tok Preproc }
   \/ ([^\n\/]+|\\\/)* \/ { tok Regex }
@@ -58,19 +80,17 @@ tokens :-
   $white ^ "def" / $white  { tok Keyword ==> pushContext (def, Plain) }
   @keyword / ~$wordchar  { tok Keyword }
   -- ? and ! as symbols as part of a method name
-  $alphanum+ [\?\!]?     { tok VarId }
+  @identifier  [\?\!]?   { tok VarId }
   @number                { tok Number }
-  @string                { tok String }
-  \` [^ \`] \`           { tok String }
-  -- note: #{var} is not a comment:
-  \# / [^\{]  { tok Comment ==> pushContext (linecomment, Comment) }
+  @singlestring          { tok String }
+  \`                     { tok String ==> pushContext (backtickstring, String) }
+  \"                     { tok String ==> pushContext (doublestring, String) }
+  \#                     { tok Comment ==> pushContext (linecomment, Comment) }
 
-  -- TODO: here docs ... need some way to store and access the end string
-  --  "<<" \-? (@string | $wordchar+)  { tok String ==> pushContext 
-
+  "<<" \-?               { tok Symbol ==> pushContext (heredoc, Plain) }
   $symbol                { tok Symbol }
   [\{ \}]                { tok CBracket }
-  [$alpha \_]$wordchar*  { tok VarId }
+  @identifier            { tok VarId }
   $white+                { tok Whitespace }
 }
 
