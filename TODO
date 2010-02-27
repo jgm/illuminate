@@ -27,28 +27,29 @@ add other languages
   x ruby
   x erb
 
+  _ work on API, nice format function
+  _ add formatting functions for latex, groff man, etc.
+  _ beef up illuminate to take options
+  _ brief instructions for writing a lexer
+  _ publicize
+
   _ php
-  _ yaml
-  _ sh
-  _ GNU Make
   _ perl
   _ lua
+  _ sh
+  _ GNU Make
+  _ yaml
   _ erlang
+  _ llvm
+  _ assembly
   _ fortran
   _ ocaml
   _ scheme
   _ clojure
   _ commonlisp
-  _ assembly
-
-  _ add formatting functions for latex, groff man
-  _ beef up illuminate to take options
-
 
   _ sql
-
   _ d
-  _ llvm
   _ objectivec
   _ smalltalk
   _ prolog

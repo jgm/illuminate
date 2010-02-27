@@ -17,9 +17,9 @@ To try this out:
     illuminate -xhtml -css illuminate.hs
 
 Right now, illuminate can highlight haskell, literate haskell, cabal,
-alex, c, c++, c#, python, ruby, java, html, xml, javascript, css, tex,
-and bibtex. (Note that it handles embedded haskell in alex files, and
-embedded javascript and css in html.)
+alex, c, c++, c#, python, ruby, java, html, rhtml, xml, javascript, css,
+tex, and bibtex. (Note that it handles embedded haskell in alex files,
+embedded javascript and css in html, and embedded ruby in rhtml.)
 
 Want to write a lexer for a language?
 Study the examples in Text/Highlight/Illuminate/*.x.
