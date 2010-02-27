@@ -24,6 +24,7 @@ Extra-Source-Files:  default.css
                      Text/Highlighting/Illuminate/Javascript.x
                      Text/Highlighting/Illuminate/LiterateHaskell.x
                      Text/Highlighting/Illuminate/Python.x
+                     Text/Highlighting/Illuminate/RHTML.x
                      Text/Highlighting/Illuminate/Ruby.x
                      Text/Highlighting/Illuminate/TeX.x
                      Text/Highlighting/Illuminate/XML.x
@@ -54,6 +55,7 @@ Library
                      Text.Highlighting.Illuminate.Javascript
                      Text.Highlighting.Illuminate.LiterateHaskell
                      Text.Highlighting.Illuminate.Python
+                     Text.Highlighting.Illuminate.RHTML
                      Text.Highlighting.Illuminate.Ruby
                      Text.Highlighting.Illuminate.TeX
                      Text.Highlighting.Illuminate.XML
@@ -76,6 +78,7 @@ Executable illuminate
                      Text.Highlighting.Illuminate.Javascript
                      Text.Highlighting.Illuminate.LiterateHaskell
                      Text.Highlighting.Illuminate.Python
+                     Text.Highlighting.Illuminate.RHTML
                      Text.Highlighting.Illuminate.Ruby
                      Text.Highlighting.Illuminate.TeX
                      Text.Highlighting.Illuminate.XML

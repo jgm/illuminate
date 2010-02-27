@@ -20,6 +20,7 @@ import qualified Text.Highlighting.Illuminate.Java as Java
 import qualified Text.Highlighting.Illuminate.Javascript as Javascript
 import qualified Text.Highlighting.Illuminate.LiterateHaskell as LiterateHaskell
 import qualified Text.Highlighting.Illuminate.Python as Python
+import qualified Text.Highlighting.Illuminate.RHTML as RHTML
 import qualified Text.Highlighting.Illuminate.Ruby as Ruby
 import qualified Text.Highlighting.Illuminate.TeX as TeX
 import qualified Text.Highlighting.Illuminate.XML as XML
@@ -51,6 +52,7 @@ lexers = [ Alex.lexer
          , LiterateHaskell.lexer
          , Python.lexer
          , Ruby.lexer
+         , RHTML.lexer
          , TeX.lexer
          , XML.lexer
          ]

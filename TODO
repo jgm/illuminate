@@ -25,10 +25,10 @@ add other languages
 
   x xml
   x ruby
+  x erb
 
-  _ erb
-  _ yaml
   _ php
+  _ yaml
   _ sh
   _ GNU Make
   _ perl
