@@ -49,11 +49,22 @@ main = do
                                  toHtmlCSS tokens
                         else XHtml.showHtml $ XHtml.pre XHtml.! [XHtml.theclass "sourceCode"] XHtml.<<
                                  toHtmlCSSInline style' tokens
-                   else toANSI style' tokens
+                   else if "-latex" `elem` opts
+                        then addLaTeXHeadFoot $ toLaTeX style' tokens
+                        else toANSI style' tokens
+
+addLaTeXHeadFoot :: String -> String
+addLaTeXHeadFoot s = unlines
+  [ "\\documentclass{report}"
+  , "\\usepackage{fancyvrb}"
+  , "\\usepackage[usenames,dvipsnames]{color}"
+  , "\\begin{document}"
+  , s
+  , "\\end{document}" ]
 
 usageAndExit :: IO ()
 usageAndExit = do
   prog <- getProgName
-  hPutStrLn stderr $ "Usage:  " ++ prog ++ " [-html|-ansi|-xhtml] [-css] [-mono] [-list] file"
+  hPutStrLn stderr $ "Usage:  " ++ prog ++ " [-html|-ansi|-xhtml|-latex] [-css] [-mono] [-list] file"
   exitWith $ ExitFailure 1
 

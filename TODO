@@ -27,6 +27,9 @@ add other languages
   x ruby
   x erb
 
+  x latex formatter
+  _ instead of style, use an options data structure
+  _ line number option, startnum option
   _ work on API, nice format function
   _ add formatting functions for latex, groff man, etc.
   _ beef up illuminate to take options

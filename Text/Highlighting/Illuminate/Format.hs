@@ -1,5 +1,6 @@
 module Text.Highlighting.Illuminate.Format (Style, Styling(..), Color(..),
-         colorful, monochrome, toANSI, toHtmlCSS, toHtmlCSSInline, cssFor, toHtmlInline) where
+         colorful, monochrome, toANSI, toLaTeX, toHtmlCSS, toHtmlCSSInline,
+         cssFor, toHtmlInline) where
 import Text.Highlighting.Illuminate.Types
 import qualified Language.Haskell.HsColour.ANSI as ANSI
 import Data.Sequence (empty, (<|))
@@ -110,6 +111,44 @@ monochrome t =
 toANSI :: Style -> Tokens -> String
 toANSI style' = F.concatMap tokenToANSI . consolidate
  where tokenToANSI (t,s) = ANSI.highlight (map toANSIHighlight $ style' t) s
+
+-- Use with \usepackage{fancyvrb} \usepackage[usenames,dvipsnames]{color}
+toLaTeX :: Style -> Tokens -> String
+toLaTeX style' toks =
+  concat [ "\\begin{Verbatim}[commandchars=\\\\\\{\\}]\n"
+         , sourcelines
+         , "\\end{Verbatim}" ]
+    where sourcelines = F.concatMap tokenToLaTeX . consolidate $ toks
+          tokenToLaTeX (t,s) = foldr addLaTeXHighlight (escapeForVerbatim s)
+                                 (style' t)
+          escapeForVerbatim "" = ""
+          escapeForVerbatim ('\\':xs) =
+             "{\\textbackslash}" ++ escapeForVerbatim xs
+          escapeForVerbatim (c:xs) | c `elem` "{}" =
+             '\\':c:escapeForVerbatim xs
+          escapeForVerbatim (c:xs) = c:escapeForVerbatim xs
+
+addLaTeXHighlight :: Styling -> String -> String
+addLaTeXHighlight st x =
+  case st of
+    Bold      -> "\\textbf{" ++ x ++ "}"
+    Italic    -> "\\textit{" ++ x ++ "}"
+    Underline -> "\\underline{" ++ x ++ "}"
+    Fixed     -> "\\texttt{" ++ x ++ "}"
+    Foreground c -> "\\textcolor{" ++ toLaTeXColor c ++ "}{" ++ x ++ "}"
+    Background c -> "\\colorbox{" ++ toLaTeXColor c ++ "}{" ++ x ++ "}" 
+
+toLaTeXColor :: Color -> String
+toLaTeXColor c =
+  case c of
+   Aqua       -> "Aquamarine"
+   Lime       -> "LimeGreen"
+   Navy       -> "NavyBlue"
+   Olive      -> "OliveGreen"
+   Silver     -> "Cyan"
+   Teal       -> "TealBlue"
+   Hex _ x    -> toLaTeXColor x
+   x          -> show x
 
 toHtmlCSS :: Tokens -> [XHtml.Html]
 toHtmlCSS = map go . F.toList . consolidate
