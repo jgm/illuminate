@@ -8,17 +8,6 @@ import qualified Text.XHtml as XHtml
 import qualified Text.Html as Html
 import Data.Char (toLower)
 
--- | Collapse adjacent tokens with the same type.
-consolidate :: Tokens -> Tokens
-consolidate = collapse . F.foldr go (empty, Nothing)
-  where go (curtype, str) (accum, Nothing) = (accum, Just (curtype, [str]))
-        go (curtype, str) (accum, Just (t,xs)) | curtype == t =
-               (accum, Just (curtype, str:xs))
-        go (curtype, str) (accum, Just (t,xs)) =
-               (collapse (accum, Just (t,xs)), Just (curtype, [str])) 
-        collapse (accum, Nothing) = accum
-        collapse (accum, Just (t,xs)) = (t, concat xs) <| accum
-
 -- | A Style is a generic instruction for formatting a token of the given
 -- type.  The same style can be used for various output formats (HTML,
 -- ANSI, LaTeX...).
@@ -190,4 +179,15 @@ cssFor colors =
                         , Entity
                         , Math
                         , Alert ]
+
+-- | Collapse adjacent tokens with the same type.
+consolidate :: Tokens -> Tokens
+consolidate = collapse . F.foldr go (empty, Nothing)
+  where go (curtype, str) (accum, Nothing) = (accum, Just (curtype, [str]))
+        go (curtype, str) (accum, Just (t,xs)) | curtype == t =
+               (accum, Just (curtype, str:xs))
+        go (curtype, str) (accum, Just (t,xs)) =
+               (collapse (accum, Just (t,xs)), Just (curtype, [str])) 
+        collapse (accum, Nothing) = accum
+        collapse (accum, Just (t,xs)) = (t, concat xs) <| accum
 
