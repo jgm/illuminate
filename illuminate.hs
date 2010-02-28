@@ -36,9 +36,12 @@ main = do
   let tokens = case tokenize (lexerByFilename file) s of
                     Right toks  -> toks
                     Left err    -> error $ show err
+  let numberlines = "-number" `elem` opts
   let options = if "-mono" `elem` opts
-                   then defaultOptions{optStyle = monochrome}
-                   else defaultOptions{optStyle = colorful}
+                   then defaultOptions{optStyle = monochrome
+                                      ,optNumberLines = numberlines}
+                   else defaultOptions{optStyle = colorful
+                                      ,optNumberLines = numberlines}
   putStr $ if "-html" `elem` opts
               then Html.renderHtml $ Html.pre Html.! [Html.theclass "sourceCode"] Html.<<
                          toHtmlInline options tokens 
@@ -65,6 +68,6 @@ addLaTeXHeadFoot s = unlines
 usageAndExit :: IO ()
 usageAndExit = do
   prog <- getProgName
-  hPutStrLn stderr $ "Usage:  " ++ prog ++ " [-html|-ansi|-xhtml|-latex] [-css] [-mono] [-list] file"
+  hPutStrLn stderr $ "Usage:  " ++ prog ++ " [-html|-ansi|-xhtml|-latex] [-css] [-mono] [-list] [-number] file"
   exitWith $ ExitFailure 1
 

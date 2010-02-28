@@ -128,7 +128,9 @@ toANSI opts = F.concatMap tokenToANSI . consolidate
 -- Use with \usepackage{fancyvrb} \usepackage[usenames,dvipsnames]{color}
 toLaTeX :: Options -> Tokens -> String 
 toLaTeX opts toks =
-  concat [ "\\begin{Verbatim}[commandchars=\\\\\\{\\}]\n"
+  concat [ "\\begin{Verbatim}[commandchars=\\\\\\{\\}"
+         , numberlines
+         , "]\n"
          , sourcelines
          , "\\end{Verbatim}" ]
     where sourcelines = F.concatMap tokenToLaTeX . consolidate $ toks
@@ -140,6 +142,12 @@ toLaTeX opts toks =
           escapeForVerbatim (c:xs) | c `elem` "{}" =
              '\\':c:escapeForVerbatim xs
           escapeForVerbatim (c:xs) = c:escapeForVerbatim xs
+          numberlines = if optNumberLines opts
+                           then ", numbers=left" ++
+                                case optStartNumber opts of
+                                      1 -> ""
+                                      x -> ", firstnumber=" ++ show x
+                           else ""
 
 addLaTeXHighlight :: Styling -> String -> String
 addLaTeXHighlight st x =
