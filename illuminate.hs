@@ -36,22 +36,22 @@ main = do
   let tokens = case tokenize (lexerByFilename file) s of
                     Right toks  -> toks
                     Left err    -> error $ show err
-  let style' = if "-mono" `elem` opts
-                  then monochrome
-                  else colorful
+  let options = if "-mono" `elem` opts
+                   then defaultOptions{optStyle = monochrome}
+                   else defaultOptions{optStyle = colorful}
   putStr $ if "-html" `elem` opts
               then Html.renderHtml $ Html.pre Html.! [Html.theclass "sourceCode"] Html.<<
-                         toHtmlInline style' tokens 
+                         toHtmlInline options tokens 
               else if "-xhtml" `elem` opts
                    then if "-css" `elem` opts
-                        then XHtml.showHtml $ XHtml.style XHtml.<< cssFor style' XHtml.+++
+                        then XHtml.showHtml $ XHtml.style XHtml.<< cssFor options XHtml.+++
                                  XHtml.pre XHtml.! [XHtml.theclass "sourceCode"] XHtml.<<
-                                 toHtmlCSS tokens
+                                 toHtmlCSS options tokens
                         else XHtml.showHtml $ XHtml.pre XHtml.! [XHtml.theclass "sourceCode"] XHtml.<<
-                                 toHtmlCSSInline style' tokens
+                                 toHtmlCSSInline options tokens
                    else if "-latex" `elem` opts
-                        then addLaTeXHeadFoot $ toLaTeX style' tokens
-                        else toANSI style' tokens
+                        then addLaTeXHeadFoot $ toLaTeX options tokens
+                        else toANSI options tokens
 
 addLaTeXHeadFoot :: String -> String
 addLaTeXHeadFoot s = unlines

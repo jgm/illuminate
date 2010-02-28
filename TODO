@@ -28,7 +28,7 @@ add other languages
   x erb
 
   x latex formatter
-  _ instead of style, use an options data structure
+  x instead of style, use an options data structure
   _ line number option, startnum option
   _ work on API, nice format function
   _ add formatting functions for latex, groff man, etc.

@@ -1,4 +1,5 @@
-module Text.Highlighting.Illuminate.Format (Style, Styling(..), Color(..),
+module Text.Highlighting.Illuminate.Format (Options(..), defaultOptions,
+         Style, Styling(..), Color(..),
          colorful, monochrome, toANSI, toLaTeX, toHtmlCSS, toHtmlCSSInline,
          cssFor, toHtmlInline) where
 import Text.Highlighting.Illuminate.Types
@@ -8,6 +9,18 @@ import qualified Data.Foldable as F
 import qualified Text.XHtml as XHtml
 import qualified Text.Html as Html
 import Data.Char (toLower)
+import Data.Bits (shiftR, (.&.))
+import Text.Printf (printf)
+
+data Options = Options { optStyle       :: Style
+                       , optNumberLines :: Bool
+                       , optStartNumber :: Int
+                       }
+
+defaultOptions :: Options
+defaultOptions = Options { optStyle = colorful
+                         , optNumberLines = False
+                         , optStartNumber = 1 }
 
 -- | A Style is a generic instruction for formatting a token of the given
 -- type.  The same style can be used for various output formats (HTML,
@@ -17,7 +30,7 @@ type Style = TokenType -> [Styling]
 -- | Colours supported by ANSI codes.
 data Color = Aqua | Black | Blue | Fuchsia | Gray | Green | Lime | Maroon |
              Navy | Olive | Purple | Red | Silver | Teal | White | Yellow |
-             Hex String Color  -- ^ Custom hexcolor fallback
+             Hex Integer Color  -- ^ Custom hexcolor fallback
              deriving (Eq, Show, Read)
 
 data Styling = Bold | Italic | Underline | Fixed | Foreground Color | Background Color
@@ -45,7 +58,7 @@ toANSIColor c =
    Hex  _ x   -> toANSIColor x
 
 toCSSColor :: Color -> String
-toCSSColor (Hex x _) = '#':x
+toCSSColor (Hex x _) = '#': printf "%6x" x
 toCSSColor c = map toLower $ show c 
 
 toANSIHighlight :: Styling -> ANSI.Highlight
@@ -108,19 +121,19 @@ monochrome t =
     Alert     -> [Bold]
     _         -> []
 
-toANSI :: Style -> Tokens -> String
-toANSI style' = F.concatMap tokenToANSI . consolidate
- where tokenToANSI (t,s) = ANSI.highlight (map toANSIHighlight $ style' t) s
+toANSI :: Options -> Tokens -> String
+toANSI opts = F.concatMap tokenToANSI . consolidate
+ where tokenToANSI (t,s) = ANSI.highlight (map toANSIHighlight $ optStyle opts t) s
 
 -- Use with \usepackage{fancyvrb} \usepackage[usenames,dvipsnames]{color}
-toLaTeX :: Style -> Tokens -> String
-toLaTeX style' toks =
+toLaTeX :: Options -> Tokens -> String 
+toLaTeX opts toks =
   concat [ "\\begin{Verbatim}[commandchars=\\\\\\{\\}]\n"
          , sourcelines
          , "\\end{Verbatim}" ]
     where sourcelines = F.concatMap tokenToLaTeX . consolidate $ toks
           tokenToLaTeX (t,s) = foldr addLaTeXHighlight (escapeForVerbatim s)
-                                 (style' t)
+                                 (optStyle opts t)
           escapeForVerbatim "" = ""
           escapeForVerbatim ('\\':xs) =
              "{\\textbackslash}" ++ escapeForVerbatim xs
@@ -135,37 +148,50 @@ addLaTeXHighlight st x =
     Italic    -> "\\textit{" ++ x ++ "}"
     Underline -> "\\underline{" ++ x ++ "}"
     Fixed     -> "\\texttt{" ++ x ++ "}"
-    Foreground c -> "\\textcolor{" ++ toLaTeXColor c ++ "}{" ++ x ++ "}"
-    Background c -> "\\colorbox{" ++ toLaTeXColor c ++ "}{" ++ x ++ "}" 
+    Foreground c -> toLaTeXColor False c x
+    Background c -> toLaTeXColor True c x
 
-toLaTeXColor :: Color -> String
-toLaTeXColor c =
-  case c of
-   Aqua       -> "Aquamarine"
-   Lime       -> "LimeGreen"
-   Navy       -> "NavyBlue"
-   Olive      -> "OliveGreen"
-   Silver     -> "Cyan"
-   Teal       -> "TealBlue"
-   Hex _ x    -> toLaTeXColor x
-   x          -> show x
+toLaTeXColor :: Bool -> Color -> String -> String
+toLaTeXColor background c s =
+  cmd ++ col ++ "{" ++ s ++ "}"
+    where inBr x = "{" ++ x ++ "}"
+          cmd = if background then "\\colorbox" else "\\textcolor"
+          col = case c of
+                 Aqua     -> inBr "Aquamarine"
+                 Lime     -> inBr "LimeGreen"
+                 Navy     -> inBr "NavyBlue"
+                 Olive    -> inBr "OliveGreen"
+                 Silver   -> inBr "Cyan"
+                 Teal     -> inBr "TealBlue"
+                 Hex x _  -> "[rgb]{" ++ hexToRGB x ++ "}"
+                 x        -> inBr (show x)
 
-toHtmlCSS :: Tokens -> [XHtml.Html]
-toHtmlCSS = map go . F.toList . consolidate
+hexToRGB :: Integer -> String
+hexToRGB x =
+  printf "%0.2f,%0.2f,%0.2f" (toFrac r) (toFrac g) (toFrac b)
+   where r = shiftR x 16 .&. 0xFF
+         g = shiftR x 8 .&. 0xFF
+         b = x .&. 0xFF
+
+toFrac :: Integer -> Double
+toFrac x = fromIntegral x / 256
+
+toHtmlCSS :: Options -> Tokens -> [XHtml.Html]
+toHtmlCSS _opts = map go . F.toList . consolidate
   where go (Whitespace, s) = XHtml.stringToHtml s
         go (Plain, s)      = XHtml.stringToHtml s
         go (x, s)          = XHtml.thespan XHtml.! [XHtml.theclass $ show x] XHtml.<< s
 
-toHtmlCSSInline :: Style -> Tokens -> [XHtml.Html]
-toHtmlCSSInline style' = map go . F.toList . consolidate
-  where go (t, s) = let styles = map stylingToCSSProperty $ style' t
+toHtmlCSSInline :: Options -> Tokens -> [XHtml.Html]
+toHtmlCSSInline opts = map go . F.toList . consolidate
+  where go (t, s) = let styles = map stylingToCSSProperty $ optStyle opts t
                     in  if null styles
                            then XHtml.stringToHtml s
                            else XHtml.thespan XHtml.! [XHtml.thestyle $ concat styles] XHtml.<< s
 
-toHtmlInline :: Style -> Tokens -> [Html.Html]
-toHtmlInline style' = map go . F.toList . consolidate
-  where go (t, s) = foldl (flip ($)) (Html.stringToHtml s) (map stylingToHtmlTag $ style' t)
+toHtmlInline :: Options -> Tokens -> [Html.Html]
+toHtmlInline opts = map go . F.toList . consolidate
+  where go (t, s) = foldl (flip ($)) (Html.stringToHtml s) (map stylingToHtmlTag $ optStyle opts t)
 
 stylingToHtmlTag :: Styling -> Html.Html -> Html.Html
 stylingToHtmlTag h =
@@ -187,8 +213,8 @@ stylingToCSSProperty h =
     Foreground c  -> "color: " ++ toCSSColor c ++ ";"
     Background c  -> "background-color: " ++ toCSSColor c ++ ";"
 
-cssFor :: Style -> String
-cssFor colors =
+cssFor :: Options -> String
+cssFor opts =
  "\n.sourceCode, .lineNumbers { margin: 0; padding: 0; border: 0; \ 
  \                              vertical-align: baseline; border: none; }\n\
  \td.lineNumbers { text-align: right; background-color: #EBEBEB; \
@@ -196,7 +222,7 @@ cssFor colors =
  \td.sourceCode { padding-left: 5px; }\n" ++
  concatMap (\tokType -> "pre.sourceCode span." ++ show tokType ++ " { " ++
                         cssProps tokType ++ "}\n") allTokTypes
-    where cssProps t = unwords $ map stylingToCSSProperty (colors t)
+    where cssProps t = unwords $ map stylingToCSSProperty (optStyle opts t)
           allTokTypes = [ Whitespace
                         , Keyword
                         , Symbol
