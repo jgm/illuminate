@@ -74,7 +74,7 @@ toANSIHighlight s =
 colorful :: Style
 colorful t =
   case t of
-    Keyword   -> [Foreground Green, Underline]
+    Keyword   -> [Foreground Green, Bold]
     Symbol    -> []
     String    -> [Foreground Green]
     Char      -> [Foreground Red]
@@ -88,8 +88,8 @@ colorful t =
     ConId     -> [Foreground Blue]
     CBracket  -> [Foreground Red]
     Comment   -> [Foreground Gray]
-    Selector  -> [Foreground Blue]
-    Property  -> [Foreground Green, Underline]
+    Selector  -> [Foreground Blue, Bold]
+    Property  -> [Foreground Green]
     Tag       -> [Foreground Blue]
     Entity    -> [Foreground Green]
     Math      -> [Foreground Green]
@@ -193,11 +193,21 @@ hexToRGB x =
 toFrac :: Integer -> Double
 toFrac x = fromIntegral x / 256
 
-toXHtmlCSS :: Options -> Tokens -> [XHtml.Html]
-toXHtmlCSS _opts = map go . F.toList . consolidate
-  where go (Whitespace, s) = XHtml.stringToHtml s
+toXHtmlCSS :: Options -> Tokens -> XHtml.Html
+toXHtmlCSS opts toks = addPre . addLineNums $ source
+  where toklist            = F.toList . consolidate $ toks
+        source             = map go toklist
+        go (Whitespace, s) = XHtml.stringToHtml s
         go (Plain, s)      = XHtml.stringToHtml s
-        go (x, s)          = XHtml.thespan XHtml.! [XHtml.theclass $ show x] XHtml.<< s
+        go (x, s)          = XHtml.thespan XHtml.!
+                                [XHtml.theclass $ show x] XHtml.<< s
+        linecount          = sum $ map (length . filter (=='\n') . snd) toklist
+        addPre x           = XHtml.pre XHtml.! [XHtml.theclass "sourceCode"] $ x
+        minnum             = optStartNumber opts
+        maxnum             = minnum + linecount - 1
+        addLineNums x      = if optNumberLines opts
+                                then XHtml.table $ XHtml.tr XHtml.<< [XHtml.td XHtml.! [XHtml.theclass "lineNumbers"] XHtml.<< unlines (map show [minnum..maxnum]), XHtml.td XHtml.! [XHtml.theclass "sourceCode"] XHtml.<< x]
+                                else XHtml.concatHtml x
 
 toXHtmlInline :: Options -> Tokens -> [XHtml.Html]
 toXHtmlInline opts = map go . F.toList . consolidate
@@ -214,7 +224,8 @@ toHtmlCSS _opts = map go . F.toList . consolidate
 
 toHtmlInline :: Options -> Tokens -> [Html.Html]
 toHtmlInline opts = map go . F.toList . consolidate
-  where go (t, s) = foldl (flip ($)) (Html.stringToHtml s) (map stylingToHtmlTag $ optStyle opts t)
+  where go (t, s) = foldl (flip ($)) (Html.stringToHtml s)
+                        (map stylingToHtmlTag $ optStyle opts t)
 
 stylingToHtmlTag :: Styling -> Html.Html -> Html.Html
 stylingToHtmlTag h =
