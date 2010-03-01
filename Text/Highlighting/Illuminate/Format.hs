@@ -122,8 +122,16 @@ monochrome t =
     _         -> []
 
 toANSI :: Options -> Tokens -> String
-toANSI opts = F.concatMap tokenToANSI . consolidate
- where tokenToANSI (t,s) = ANSI.highlight (map toANSIHighlight $ optStyle opts t) s
+toANSI opts toks =
+  if optNumberLines opts
+     then unlines $ zipWith addNumber [startnum..] (lines source)
+     else source
+  where
+   addNumber = printf ("%" ++ (show . length . show $ maxnum) ++ "d %s")
+   startnum = optStartNumber opts
+   source = F.concatMap tokenToANSI . consolidate $ toks
+   maxnum = startnum + length source
+   tokenToANSI (t,s) = ANSI.highlight (map toANSIHighlight $ optStyle opts t) s
 
 -- Use with \usepackage{fancyvrb} \usepackage[usenames,dvipsnames]{color}
 toLaTeX :: Options -> Tokens -> String 
