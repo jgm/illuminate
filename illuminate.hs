@@ -15,7 +15,7 @@ import System.IO.UTF8
 #endif
 import System.IO (stderr)
 import System.Exit
-import Data.List (intercalate)
+import Data.List (intercalate, find, isPrefixOf)
 
 main :: IO ()
 main = do
@@ -37,11 +37,14 @@ main = do
                     Right toks  -> toks
                     Left err    -> error $ show err
   let numberlines = "-number" `elem` opts
+  let startnum = case find ("-startnum=" `isPrefixOf`) opts of
+                      Just x -> read $ drop 10 x
+                      Nothing -> 1
+  let defOptions = defaultOptions { optNumberLines = numberlines
+                                  , optStartNumber = startnum }
   let options = if "-mono" `elem` opts
-                   then defaultOptions{optStyle = monochrome
-                                      ,optNumberLines = numberlines}
-                   else defaultOptions{optStyle = colorful
-                                      ,optNumberLines = numberlines}
+                   then defOptions{ optStyle = monochrome }
+                   else defOptions{ optStyle = colorful }
   putStr $ if "-html" `elem` opts
               then Html.renderHtml $ Html.pre Html.! [Html.theclass "sourceCode"] Html.<<
                          toHtmlInline options tokens 
@@ -68,6 +71,6 @@ addLaTeXHeadFoot s = unlines
 usageAndExit :: IO ()
 usageAndExit = do
   prog <- getProgName
-  hPutStrLn stderr $ "Usage:  " ++ prog ++ " [-html|-ansi|-xhtml|-latex] [-css] [-mono] [-list] [-number] file"
+  hPutStrLn stderr $ "Usage:  " ++ prog ++ " [-html|-ansi|-xhtml|-latex] [-css] [-mono] [-list] [-number] [-startnum=n] file"
   exitWith $ ExitFailure 1
 

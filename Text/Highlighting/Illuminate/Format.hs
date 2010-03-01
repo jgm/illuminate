@@ -127,7 +127,8 @@ toANSI opts toks =
      then unlines $ zipWith addNumber [startnum..] (lines source)
      else source
   where
-   addNumber = printf ("%" ++ (show . length . show $ maxnum) ++ "d %s")
+   addNumber x s = ANSI.highlight [ANSI.Foreground ANSI.Cyan] $ fmtNumber x ++ s
+   fmtNumber = printf ("%" ++ (show . length . show $ maxnum) ++ "d ")
    startnum = optStartNumber opts
    source = F.concatMap tokenToANSI . consolidate $ toks
    maxnum = startnum + length source
