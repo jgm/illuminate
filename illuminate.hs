@@ -52,9 +52,9 @@ main = do
                    then if "-css" `elem` opts
                         then XHtml.showHtml $ XHtml.style XHtml.<< cssFor options XHtml.+++
                                  XHtml.pre XHtml.! [XHtml.theclass "sourceCode"] XHtml.<<
-                                 toHtmlCSS options tokens
+                                 toXHtmlCSS options tokens
                         else XHtml.showHtml $ XHtml.pre XHtml.! [XHtml.theclass "sourceCode"] XHtml.<<
-                                 toHtmlCSSInline options tokens
+                                 toXHtmlInline options tokens
                    else if "-latex" `elem` opts
                         then addLaTeXHeadFoot $ toLaTeX options tokens
                         else toANSI options tokens

@@ -1,7 +1,7 @@
 module Text.Highlighting.Illuminate.Format (Options(..), defaultOptions,
          Style, Styling(..), Color(..),
-         colorful, monochrome, toANSI, toLaTeX, toHtmlCSS, toHtmlCSSInline,
-         cssFor, toHtmlInline) where
+         colorful, monochrome, toANSI, toLaTeX, toXHtmlCSS, toXHtmlInline,
+         cssFor, toHtmlCSS, toHtmlInline) where
 import Text.Highlighting.Illuminate.Types
 import qualified Language.Haskell.HsColour.ANSI as ANSI
 import Data.Sequence (empty, (<|))
@@ -193,18 +193,24 @@ hexToRGB x =
 toFrac :: Integer -> Double
 toFrac x = fromIntegral x / 256
 
-toHtmlCSS :: Options -> Tokens -> [XHtml.Html]
-toHtmlCSS _opts = map go . F.toList . consolidate
+toXHtmlCSS :: Options -> Tokens -> [XHtml.Html]
+toXHtmlCSS _opts = map go . F.toList . consolidate
   where go (Whitespace, s) = XHtml.stringToHtml s
         go (Plain, s)      = XHtml.stringToHtml s
         go (x, s)          = XHtml.thespan XHtml.! [XHtml.theclass $ show x] XHtml.<< s
 
-toHtmlCSSInline :: Options -> Tokens -> [XHtml.Html]
-toHtmlCSSInline opts = map go . F.toList . consolidate
+toXHtmlInline :: Options -> Tokens -> [XHtml.Html]
+toXHtmlInline opts = map go . F.toList . consolidate
   where go (t, s) = let styles = map stylingToCSSProperty $ optStyle opts t
                     in  if null styles
                            then XHtml.stringToHtml s
                            else XHtml.thespan XHtml.! [XHtml.thestyle $ concat styles] XHtml.<< s
+
+toHtmlCSS :: Options -> Tokens -> [Html.Html]
+toHtmlCSS _opts = map go . F.toList . consolidate
+  where go (Whitespace, s) = Html.stringToHtml s
+        go (Plain, s)      = Html.stringToHtml s
+        go (x, s)          = Html.thespan Html.! [Html.theclass $ show x] Html.<< s
 
 toHtmlInline :: Options -> Tokens -> [Html.Html]
 toHtmlInline opts = map go . F.toList . consolidate
