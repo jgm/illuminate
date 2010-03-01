@@ -29,7 +29,9 @@ add other languages
 
   x latex formatter
   x instead of style, use an options data structure
-  _ line number option, startnum option
+  x line number option, startnum option
+  _ line numbers for html
+  _ option for language name (so html can put this in class)
   _ work on API, nice format function
   _ add formatting functions for latex, groff man, etc.
   _ beef up illuminate to take options
