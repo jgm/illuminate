@@ -30,7 +30,7 @@ add other languages
   x latex formatter
   x instead of style, use an options data structure
   x line number option, startnum option
-  _ line numbers for html
+  _ line numbers for html (done for xhtml+css; finish for others)
   _ work on API, nice format function
   _ add formatting functions for latex, groff man, etc.
   _ beef up illuminate to take options
