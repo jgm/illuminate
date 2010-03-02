@@ -269,7 +269,7 @@ toHtmlInline opts toks = addLineNums source
         addPre x           = H.pre H.! [H.thestyle "padding: 0;margin: 0;"] $ x
         minnum             = optStartNumber opts
         maxnum             = minnum + linecount - 1
-        linenumstyle       = "text-align:right;background-color:#EBEBEB;" ++
+        linenumstyle       = "text-align:right;border-right: 1px solid gray;" ++
                              "padding: 0 5px 0 5px;vertical-align: baseline;"
         linenumsCell x y   = H.td H.!  [H.thestyle linenumstyle] H.<<
                                  addPre (H.stringToHtml $ unlines
