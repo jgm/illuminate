@@ -206,10 +206,12 @@ toXHtmlCSS opts toks = addLineNums source
         minnum             = optStartNumber opts
         maxnum             = minnum + linecount - 1
         linenumsCell x y   = X.td X.! [X.theclass "lineNumbers"] X.<<
-                                 addPre (X.stringToHtml $ unlines (map show [x..y]))
+                                 addPre (X.stringToHtml $ unlines
+                                           (map show [x..y]))
         mainCell x         = X.td X.! [X.theclass "sourceCode"] X.<< x
         addLineNums x      = if optNumberLines opts
-                                then X.table $ X.tr X.<< [linenumsCell minnum maxnum, mainCell x]
+                                then X.table $ X.tr X.<<
+                                      [linenumsCell minnum maxnum, mainCell x]
                                 else x
 
 toXHtmlInline :: Options -> Tokens -> X.Html
@@ -225,8 +227,11 @@ toXHtmlInline opts toks = addLineNums source
         addPre x           = X.pre X.! [X.thestyle "padding: 0;margin: 0;"] $ x
         minnum             = optStartNumber opts
         maxnum             = minnum + linecount - 1
-        linenumsCell x y   = X.td X.!  [X.thestyle "text-align:right;background-color:#EBEBEB;padding: 0 5px 0 5px;vertical-align: baseline;"] X.<<
-                                 addPre (X.stringToHtml $ unlines (map show [x..y]))
+        linenumstyle       = "text-align:right;background-color:#EBEBEB;" ++
+                             "padding: 0 5px 0 5px;vertical-align: baseline;"
+        linenumsCell x y   = X.td X.!  [X.thestyle linenumstyle] X.<<
+                                 addPre (X.stringToHtml $ unlines
+                                          (map show [x..y]))
         mainCell x         = X.td X.! [X.thestyle "padding-left: 5px;"] X.<< x
         addLineNums x      = if optNumberLines opts
                                 then X.table $ X.tr X.<<
@@ -246,10 +251,12 @@ toHtmlCSS opts toks = addLineNums source
         minnum             = optStartNumber opts
         maxnum             = minnum + linecount - 1
         linenumsCell x y   = H.td H.! [H.theclass "lineNumbers"] H.<<
-                                 addPre (H.stringToHtml $ unlines (map show [x..y]))
+                                 addPre (H.stringToHtml $ unlines
+                                            (map show [x..y]))
         mainCell x         = H.td H.! [H.theclass "sourceCode"] H.<< x
         addLineNums x      = if optNumberLines opts
-                                then H.table $ H.tr H.<< [linenumsCell minnum maxnum, mainCell x]
+                                then H.table $ H.tr H.<<
+                                      [linenumsCell minnum maxnum, mainCell x]
                                 else x
 
 -- TODO numbering...
