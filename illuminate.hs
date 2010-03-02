@@ -46,13 +46,15 @@ main = do
                    then defOptions{ optStyle = monochrome }
                    else defOptions{ optStyle = colorful }
   putStr $ if "-html" `elem` opts
-              then Html.renderHtml $ Html.pre Html.! [Html.theclass "sourceCode"] Html.<<
-                         toHtmlInline options tokens 
+              then if "-css" `elem` opts
+                      then Html.renderHtml $ Html.header Html.<< [Html.thetitle Html.<< file, Html.style Html.! [Html.thetype "text/css"] Html.<< cssFor options]
+                                Html.+++ Html.body Html.<< [toHtmlCSS options tokens]
+                      else Html.renderHtml $ Html.pre Html.! [Html.theclass "sourceCode"] Html.<<
+                            toHtmlInline options tokens 
               else if "-xhtml" `elem` opts
                    then if "-css" `elem` opts
-                        then XHtml.showHtml $ XHtml.style XHtml.<< cssFor options XHtml.+++
-                                 XHtml.pre XHtml.! [XHtml.theclass "sourceCode"] XHtml.<<
-                                 toXHtmlCSS options tokens
+                        then XHtml.showHtml $ XHtml.header XHtml.<< [XHtml.thetitle XHtml.<< file, XHtml.style XHtml.! [XHtml.thetype "text/css"] XHtml.<< cssFor options]
+                                XHtml.+++ XHtml.body XHtml.<< [toXHtmlCSS options tokens]
                         else XHtml.showHtml $ XHtml.pre XHtml.! [XHtml.theclass "sourceCode"] XHtml.<<
                                  toXHtmlInline options tokens
                    else if "-latex" `elem` opts

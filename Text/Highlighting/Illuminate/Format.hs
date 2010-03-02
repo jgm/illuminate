@@ -194,9 +194,9 @@ toFrac :: Integer -> Double
 toFrac x = fromIntegral x / 256
 
 toXHtmlCSS :: Options -> Tokens -> XHtml.Html
-toXHtmlCSS opts toks = addPre . addLineNums $ source
+toXHtmlCSS opts toks = addLineNums source
   where toklist            = F.toList . consolidate $ toks
-        source             = map go toklist
+        source             = addPre $ XHtml.concatHtml $ map go toklist
         go (Whitespace, s) = XHtml.stringToHtml s
         go (Plain, s)      = XHtml.stringToHtml s
         go (x, s)          = XHtml.thespan XHtml.!
@@ -205,9 +205,12 @@ toXHtmlCSS opts toks = addPre . addLineNums $ source
         addPre x           = XHtml.pre XHtml.! [XHtml.theclass "sourceCode"] $ x
         minnum             = optStartNumber opts
         maxnum             = minnum + linecount - 1
+        linenumsCell x y   = XHtml.td XHtml.! [XHtml.theclass "lineNumbers"] XHtml.<<
+                                 addPre (XHtml.stringToHtml $ unlines (map show [x..y]))
+        mainCell x         = XHtml.td XHtml.! [XHtml.theclass "sourceCode"] XHtml.<< x
         addLineNums x      = if optNumberLines opts
-                                then XHtml.table $ XHtml.tr XHtml.<< [XHtml.td XHtml.! [XHtml.theclass "lineNumbers"] XHtml.<< unlines (map show [minnum..maxnum]), XHtml.td XHtml.! [XHtml.theclass "sourceCode"] XHtml.<< x]
-                                else XHtml.concatHtml x
+                                then XHtml.table $ XHtml.tr XHtml.<< [linenumsCell minnum maxnum, mainCell x]
+                                else x
 
 toXHtmlInline :: Options -> Tokens -> [XHtml.Html]
 toXHtmlInline opts = map go . F.toList . consolidate
@@ -216,11 +219,24 @@ toXHtmlInline opts = map go . F.toList . consolidate
                            then XHtml.stringToHtml s
                            else XHtml.thespan XHtml.! [XHtml.thestyle $ concat styles] XHtml.<< s
 
-toHtmlCSS :: Options -> Tokens -> [Html.Html]
-toHtmlCSS _opts = map go . F.toList . consolidate
-  where go (Whitespace, s) = Html.stringToHtml s
+toHtmlCSS :: Options -> Tokens -> Html.Html
+toHtmlCSS opts toks = addLineNums source
+  where toklist            = F.toList . consolidate $ toks
+        source             = addPre $ Html.concatHtml $ map go toklist
+        go (Whitespace, s) = Html.stringToHtml s
         go (Plain, s)      = Html.stringToHtml s
-        go (x, s)          = Html.thespan Html.! [Html.theclass $ show x] Html.<< s
+        go (x, s)          = Html.thespan Html.!
+                                [Html.theclass $ show x] Html.<< s
+        linecount          = sum $ map (length . filter (=='\n') . snd) toklist
+        addPre x           = Html.pre Html.! [Html.theclass "sourceCode"] $ x
+        minnum             = optStartNumber opts
+        maxnum             = minnum + linecount - 1
+        linenumsCell x y   = Html.td Html.! [Html.theclass "lineNumbers"] Html.<<
+                                 addPre (Html.stringToHtml $ unlines (map show [x..y]))
+        mainCell x         = Html.td Html.! [Html.theclass "sourceCode"] Html.<< x
+        addLineNums x      = if optNumberLines opts
+                                then Html.table $ Html.tr Html.<< [linenumsCell minnum maxnum, mainCell x]
+                                else x
 
 toHtmlInline :: Options -> Tokens -> [Html.Html]
 toHtmlInline opts = map go . F.toList . consolidate
