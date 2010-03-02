@@ -252,8 +252,9 @@ toHtmlCSS opts toks = addLineNums source
                                 then Html.table $ Html.tr Html.<< [linenumsCell minnum maxnum, mainCell x]
                                 else x
 
-toHtmlInline :: Options -> Tokens -> [Html.Html]
-toHtmlInline opts = map go . F.toList . consolidate
+-- TODO numbering...
+toHtmlInline :: Options -> Tokens -> Html.Html
+toHtmlInline opts = Html.pre . Html.concatHtml . map go . F.toList . consolidate
   where go (t, s) = foldl (flip ($)) (Html.stringToHtml s)
                         (map stylingToHtmlTag $ optStyle opts t)
 

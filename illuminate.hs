@@ -49,8 +49,7 @@ main = do
               then if "-css" `elem` opts
                       then Html.renderHtml $ Html.header Html.<< [Html.thetitle Html.<< file, Html.style Html.! [Html.thetype "text/css"] Html.<< cssFor options]
                                 Html.+++ Html.body Html.<< [toHtmlCSS options tokens]
-                      else Html.renderHtml $ Html.pre Html.! [Html.theclass "sourceCode"] Html.<<
-                            toHtmlInline options tokens 
+                      else Html.renderHtml $ toHtmlInline options tokens 
               else if "-xhtml" `elem` opts
                    then if "-css" `elem` opts
                         then XHtml.showHtml $ XHtml.header XHtml.<< [XHtml.thetitle XHtml.<< file, XHtml.style XHtml.! [XHtml.thetype "text/css"] XHtml.<< cssFor options]
