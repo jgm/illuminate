@@ -30,11 +30,11 @@ add other languages
   x latex formatter
   x instead of style, use an options data structure
   x line number option, startnum option
-  _ line numbers for html (done for xhtml+css & html+css; finish for others)
+  x line numbers for html (done for xhtml+css & html+css; finish for others)
+  x beef up illuminate to take options
+
   _ work on API, nice format function
-  _ add formatting functions for latex, groff man, etc.
-  _ beef up illuminate to take options
-  _ brief instructions for writing a lexer
+  _ brief instructions for writing a lexer, style, formatter
   _ publicize
 
   _ php
