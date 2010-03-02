@@ -33,7 +33,8 @@ add other languages
   x line numbers for html (done for xhtml+css & html+css; finish for others)
   x beef up illuminate to take options
 
-  _ line numbering for html inline, and clean up format module
+  x line numbering for html inline, and
+  _ clean up format module
   _ work on API, nice format function
   _ brief instructions for writing a lexer, style, formatter
   _ publicize

@@ -259,11 +259,26 @@ toHtmlCSS opts toks = addLineNums source
                                       [linenumsCell minnum maxnum, mainCell x]
                                 else x
 
--- TODO numbering...
 toHtmlInline :: Options -> Tokens -> H.Html
-toHtmlInline opts = H.pre . H.concatHtml . map go . F.toList . consolidate
-  where go (t, s) = foldl (flip ($)) (H.stringToHtml s)
-                        (map stylingToHtmlTag $ optStyle opts t)
+toHtmlInline opts toks = addLineNums source
+  where toklist            = F.toList . consolidate $ toks
+        source             = addPre $ H.concatHtml $ map go toklist
+        go (t, s)          = foldl (flip ($)) (H.stringToHtml s)
+                                (map stylingToHtmlTag $ optStyle opts t)
+        linecount          = sum $ map (length . filter (=='\n') . snd) toklist
+        addPre x           = H.pre H.! [H.thestyle "padding: 0;margin: 0;"] $ x
+        minnum             = optStartNumber opts
+        maxnum             = minnum + linecount - 1
+        linenumstyle       = "text-align:right;background-color:#EBEBEB;" ++
+                             "padding: 0 5px 0 5px;vertical-align: baseline;"
+        linenumsCell x y   = H.td H.!  [H.thestyle linenumstyle] H.<<
+                                 addPre (H.stringToHtml $ unlines
+                                          (map show [x..y]))
+        mainCell x         = H.td H.! [H.thestyle "padding-left: 5px;"] H.<< x
+        addLineNums x      = if optNumberLines opts
+                                then H.table $ H.tr H.<<
+                                      [linenumsCell minnum maxnum, mainCell x]
+                                else x
 
 stylingToHtmlTag :: Styling -> H.Html -> H.Html
 stylingToHtmlTag h =
