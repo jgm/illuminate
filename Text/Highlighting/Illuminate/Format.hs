@@ -212,12 +212,26 @@ toXHtmlCSS opts toks = addLineNums source
                                 then XHtml.table $ XHtml.tr XHtml.<< [linenumsCell minnum maxnum, mainCell x]
                                 else x
 
-toXHtmlInline :: Options -> Tokens -> [XHtml.Html]
-toXHtmlInline opts = map go . F.toList . consolidate
-  where go (t, s) = let styles = map stylingToCSSProperty $ optStyle opts t
+toXHtmlInline :: Options -> Tokens -> XHtml.Html
+toXHtmlInline opts toks = addLineNums source
+  where toklist            = F.toList . consolidate $ toks
+        source             = addPre $ XHtml.concatHtml $ map go toklist
+        go (t, s) = let styles = map stylingToCSSProperty $ optStyle opts t
                     in  if null styles
                            then XHtml.stringToHtml s
-                           else XHtml.thespan XHtml.! [XHtml.thestyle $ concat styles] XHtml.<< s
+                           else XHtml.thespan XHtml.!
+                                 [XHtml.thestyle $ concat styles] XHtml.<< s
+        linecount          = sum $ map (length . filter (=='\n') . snd) toklist
+        addPre x           = XHtml.pre XHtml.! [XHtml.thestyle "padding: 0;margin: 0;"] $ x
+        minnum             = optStartNumber opts
+        maxnum             = minnum + linecount - 1
+        linenumsCell x y   = XHtml.td XHtml.!  [XHtml.thestyle "text-align:right;background-color:#EBEBEB;padding: 0 5px 0 5px;vertical-align: baseline;"] XHtml.<<
+                                 addPre (XHtml.stringToHtml $ unlines (map show [x..y]))
+        mainCell x         = XHtml.td XHtml.! [XHtml.thestyle "padding-left: 5px;"] XHtml.<< x
+        addLineNums x      = if optNumberLines opts
+                                then XHtml.table $ XHtml.tr XHtml.<<
+                                      [linenumsCell minnum maxnum, mainCell x]
+                                else x
 
 toHtmlCSS :: Options -> Tokens -> Html.Html
 toHtmlCSS opts toks = addLineNums source
