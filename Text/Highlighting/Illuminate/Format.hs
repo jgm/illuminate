@@ -227,12 +227,12 @@ toXHtmlInline opts toks = addLineNums source
         addPre x           = X.pre X.! [X.thestyle "padding: 0;margin: 0;"] $ x
         minnum             = optStartNumber opts
         maxnum             = minnum + linecount - 1
-        linenumstyle       = "text-align:right;background-color:#EBEBEB;" ++
+        linenumstyle       = "text-align:right;border-right: 1px solid gray;" ++
                              "padding: 0 5px 0 5px;vertical-align: baseline;"
         linenumsCell x y   = X.td X.!  [X.thestyle linenumstyle] X.<<
                                  addPre (X.stringToHtml $ unlines
                                           (map show [x..y]))
-        mainCell x         = X.td X.! [X.thestyle "padding-left: 5px;"] X.<< x
+        mainCell x         = X.td X.! [X.thestyle "padding: 0 5px 0 5px;"] X.<< x
         addLineNums x      = if optNumberLines opts
                                 then X.table $ X.tr X.<<
                                       [linenumsCell minnum maxnum, mainCell x]
@@ -274,7 +274,7 @@ toHtmlInline opts toks = addLineNums source
         linenumsCell x y   = H.td H.!  [H.thestyle linenumstyle] H.<<
                                  addPre (H.stringToHtml $ unlines
                                           (map show [x..y]))
-        mainCell x         = H.td H.! [H.thestyle "padding-left: 5px;"] H.<< x
+        mainCell x         = H.td H.! [H.thestyle "padding: 0 5px 0 5px;"] H.<< x
         addLineNums x      = if optNumberLines opts
                                 then H.table $ H.tr H.<<
                                       [linenumsCell minnum maxnum, mainCell x]
@@ -304,7 +304,7 @@ cssFor :: Options -> String
 cssFor opts =
  "\n.sourceCode, .lineNumbers { margin: 0; padding: 0; border: 0; \ 
  \                              vertical-align: baseline; border: none; }\n\
- \td.lineNumbers { text-align: right; background-color: #EBEBEB; \
+ \td.lineNumbers { text-align: right; border-right: 1px solid gray; \
  \                 color: black; padding-right: 5px; padding-left: 5px; } \n\
  \td.sourceCode { padding-left: 5px; }\n" ++
  concatMap (\tokType -> "pre.sourceCode span." ++ show tokType ++ " { " ++
