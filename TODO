@@ -1,43 +1,4 @@
-add other languages
-  x haskell
-  x css
-  x c
-  x cpp
-  x csharp
-  x cabal
-  x lhs
-  x java
-  x alex
-  
-  x html
-  x javascript
-  x python
-  x better records for representing languages w/ extension info - see pygments
-  x add processing with regex to split up a token rather than overusing states
-
-  x more flexible formatting options
-
-  x improve metadata for lexers, see pygmentize:
-
-  x add bibtex stuff to tex parser; test with latex, context, bibtex
- 
-  x reduce reliance on split, which is slow...
-
-  x xml
-  x ruby
-  x erb
-
-  x latex formatter
-  x instead of style, use an options data structure
-  x line number option, startnum option
-  x line numbers for html (done for xhtml+css & html+css; finish for others)
-  x beef up illuminate to take options
-
-  x line numbering for html inline, and
-  _ clean up format module
-  _ work on API, nice format function
   _ brief instructions for writing a lexer, style, formatter
-  _ publicize
 
   _ php
   _ perl
@@ -53,7 +14,6 @@ add other languages
   _ scheme
   _ clojure
   _ commonlisp
-
   _ sql
   _ d
   _ objectivec
@@ -65,9 +25,3 @@ add other languages
   _ awk
   _ diff
   _ xlst
-  _ lex
-  _ yacc
-  _ happy  -- all of these on same pattern, w/ same extensions (yacc/happy, lex/alex)
-           -- handle this by having scanner put the language name in state
-           -- the handlers for code sections { } can then call the appropriate scanner
-
