@@ -1,10 +1,13 @@
   _ brief instructions for writing a lexer, style, formatter
 
+  _ rxml
+  _ erb  (match *.erb, but only if rxhtml and rxml don't match)
+  _ diff
+  _ sh
+  _ GNU Make
   _ php
   _ perl
   _ lua
-  _ sh
-  _ GNU Make
   _ yaml
   _ erlang
   _ llvm
@@ -23,5 +26,4 @@
   _ tcl
   _ vb
   _ awk
-  _ diff
   _ xlst
