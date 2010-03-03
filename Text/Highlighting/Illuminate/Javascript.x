@@ -1,6 +1,6 @@
 {
 {-# OPTIONS -w  #-} -- Suppress warnings from alex-generated code
-module Text.Highlighting.Illuminate.Javascript  where
+module Text.Highlighting.Illuminate.Javascript (lexer) where
 }
 
 %wrapper "illuminate"

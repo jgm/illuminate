@@ -1,6 +1,6 @@
 {
 {-# OPTIONS -w  #-} -- Suppress warnings from alex-generated code
-module Text.Highlighting.Illuminate.Ruby  where
+module Text.Highlighting.Illuminate.Ruby (lexer) where
 }
 
 %wrapper "illuminate"

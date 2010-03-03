@@ -3,13 +3,18 @@ Version:             0.1
 Cabal-Version:       >= 1.2
 Build-Type:          Custom
 Category:            Text
-Synopsis:            Syntax highlighting
-Description:         A fast syntax highlighting library using alex-produced lexers.
+Synopsis:            A fast syntax highlighting library built with alex. 
+Description:         illuminate is a source-code syntax highlighting
+                     library and a command-line highlighting tool.
+                     It can produce output in HTML, XHTML, LaTeX, or
+                     ANSI. It is smaller, less memory-hungry, and
+                     much faster than highlighting-kate.
 
 License:             BSD3
 License-file:        LICENSE
 Author:              John MacFarlane
 Maintainer:          jgm@berkeley.edu
+Homepage:            http://github.com/jgm/illuminate
 Extra-Source-Files:  default.css
                      Text/Highlighting/Illuminate/Alex.x
                      Text/Highlighting/Illuminate/BibTeX.x
@@ -84,7 +89,7 @@ Executable illuminate
                      Text.Highlighting.Illuminate.XML
   Build-Tools:       alex >= 2 && < 3
   Ghc-Options:       -Wall -funbox-strict-fields
-  Ghc-Prof-Options: -auto-all -caf-all -O0
+  Ghc-Prof-Options:  -auto-all -caf-all -O0
   if flag(executable)
     Buildable:      True
   else

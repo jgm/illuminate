@@ -1,6 +1,6 @@
 {
 {-# OPTIONS -w  #-} -- Suppress warnings from alex-generated code
-module Text.Highlighting.Illuminate.TeX where
+module Text.Highlighting.Illuminate.TeX (lexer) where
 }
 
 %wrapper "illuminate"

@@ -1,6 +1,6 @@
 {
 {-# OPTIONS -w  #-} -- Suppress warnings from alex-generated code
-module Text.Highlighting.Illuminate.Alex  where
+module Text.Highlighting.Illuminate.Alex (lexer) where
 import qualified Text.Highlighting.Illuminate.Haskell as Haskell
 }
 

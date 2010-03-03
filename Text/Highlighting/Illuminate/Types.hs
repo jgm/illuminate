@@ -1,4 +1,9 @@
-module Text.Highlighting.Illuminate.Types (Token, Tokens, TokenType(..), Scanner, Lexer(..)) where
+module Text.Highlighting.Illuminate.Types ( Token
+                                          , Tokens
+                                          , TokenType(..)
+                                          , Scanner
+                                          , Lexer(..)
+                                          ) where
 import System.FilePath.GlobPattern (GlobPattern)
 import Data.Sequence (Seq)
 

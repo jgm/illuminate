@@ -1,6 +1,6 @@
 {
 {-# OPTIONS -w  #-} -- Suppress warnings from alex-generated code
-module Text.Highlighting.Illuminate.HTML  where
+module Text.Highlighting.Illuminate.HTML (lexer) where
 import qualified Text.Highlighting.Illuminate.CSS as CSS
 import qualified Text.Highlighting.Illuminate.Javascript as Javascript 
 }

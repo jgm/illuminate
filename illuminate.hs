@@ -94,7 +94,7 @@ main = do
 
   when (Version `elem` opts) $
      -- TODO add version using cabal
-     putStrLn (prg ++ " " ++ " - (c) 2010 John MacFarlane") >> 
+     putStrLn (prg ++ " " ++ " -- (c) 2010 John MacFarlane") >> 
      exitWith ExitSuccess
 
   s <- case fnames of
@@ -150,10 +150,12 @@ main = do
          "xhtml"      -> output $ inXHtml [X.thetitle X.<< fname] $
                          toXHtmlInline options tokens
          "htmlcss"    -> output $ inHtml [ H.thetitle H.<< fname
-                                         , H.style H.! [H.thetype "text/css"] H.<< cssFor options ] $
+                                         , H.style H.! [H.thetype "text/css"] H.<<
+                                             cssFor options ] $
                          toHtmlCSS options tokens
          "xhtmlcss"   -> output $ inXHtml [ X.thetitle X.<< fname
-                                          , X.style X.! [X.thetype "text/css"] X.<< cssFor options ] $
+                                          , X.style X.! [X.thetype "text/css"] X.<<
+                                             cssFor options ] $
                          toXHtmlCSS options tokens
          "latex"      -> output $ addLaTeXHeadFoot $ toLaTeX options tokens
          "ansi"       -> output $ toANSI options tokens

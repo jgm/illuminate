@@ -1,6 +1,6 @@
 {
 {-# OPTIONS -w  #-} -- Suppress warnings from alex-generated code
-module Text.Highlighting.Illuminate.RHTML where
+module Text.Highlighting.Illuminate.RHTML (lexer) where
 import qualified Text.Highlighting.Illuminate.HTML as HTML
 import qualified Text.Highlighting.Illuminate.Ruby as Ruby
 }

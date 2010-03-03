@@ -1,5 +1,10 @@
-module Text.Highlighting.Illuminate ( tokenize, Lexer(..), lexers, lexerByName,
-  lexerByFilename, module Text.Highlighting.Illuminate.Format ) where
+module Text.Highlighting.Illuminate
+         ( tokenize
+         , Lexer(..)
+         , lexers
+         , lexerByName
+         , lexerByFilename
+         , module Text.Highlighting.Illuminate.Format ) where
 import Data.Char (toLower)
 import Data.List (find)
 import Data.Sequence (singleton)
@@ -25,14 +30,24 @@ import qualified Text.Highlighting.Illuminate.Ruby as Ruby
 import qualified Text.Highlighting.Illuminate.TeX as TeX
 import qualified Text.Highlighting.Illuminate.XML as XML
 
+-- | Tokenize a string, returning either an error or a sequence
+-- of tokens.  If the first argument is @Just@ a lexer, use
+-- the lexer to tokenize.  If @Nothing@, return a single @Plain@
+-- token with the whole source.  'tokenize' is designed to be
+-- used with 'lexerByName' or 'lexerByFilename': for example,
+-- 
+-- > tokenize (lexerByName "Haskell") input
+--
 tokenize :: Maybe Lexer -> String -> Either String Tokens
 tokenize (Just lexer) source = scan lexer source
 tokenize Nothing source = Right $ singleton $ (Plain, source)
 
+-- | Matches a lexer by name or alias (case-insensitive).
 lexerByName :: String -> Maybe Lexer
 lexerByName s = find matchName lexers
   where matchName l = map toLower s `elem` (map toLower (name l) : aliases l)
 
+-- | Matches a lexer by the filename of the source file.
 lexerByFilename :: String -> Maybe Lexer
 lexerByFilename s = find matchFilename lexers
   where matchFilename l = any (\glob -> takeFileName s ~~ glob) (filenames l)

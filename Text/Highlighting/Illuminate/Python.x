@@ -1,6 +1,6 @@
 {
 {-# OPTIONS -w  #-} -- Suppress warnings from alex-generated code
-module Text.Highlighting.Illuminate.Python  where
+module Text.Highlighting.Illuminate.Python (lexer) where
 }
 
 %wrapper "illuminate"

@@ -1,7 +1,18 @@
-module Text.Highlighting.Illuminate.Format (Options(..), defaultOptions,
-         Style, Styling(..), Color(..),
-         colorful, monochrome, toANSI, toLaTeX, toXHtmlCSS, toXHtmlInline,
-         cssFor, toHtmlCSS, toHtmlInline) where
+module Text.Highlighting.Illuminate.Format
+           ( Options(..)
+           , defaultOptions
+           , Style
+           , Styling(..)
+           , Color(..)
+           , colorful
+           , monochrome
+           , toANSI
+           , toLaTeX
+           , toXHtmlCSS
+           , toXHtmlInline
+           , cssFor
+           , toHtmlCSS
+           , toHtmlInline) where
 import Text.Highlighting.Illuminate.Types
 import qualified Language.Haskell.HsColour.ANSI as ANSI
 import Data.Sequence (empty, (<|))
@@ -27,14 +38,69 @@ defaultOptions = Options { optStyle = colorful
 -- ANSI, LaTeX...).
 type Style = TokenType -> [Styling]
 
--- | Colours supported by ANSI codes.
-data Color = Aqua | Black | Blue | Fuchsia | Gray | Green | Lime | Maroon |
-             Navy | Olive | Purple | Red | Silver | Teal | White | Yellow |
-             Hex Integer Color  -- ^ Custom hexcolor fallback
-             deriving (Eq, Show, Read)
-
 data Styling = Bold | Italic | Underline | Fixed | Foreground Color | Background Color
                deriving (Eq,Show,Read)
+
+-- Styles
+
+-- | A colorful style.
+colorful :: Style
+colorful t =
+  case t of
+    Keyword   -> [Foreground Green, Bold]
+    Symbol    -> []
+    String    -> [Foreground Green]
+    Char      -> [Foreground Red]
+    Number    -> [Foreground Teal]
+    Regex     -> [Foreground Maroon]
+    Type      -> [Foreground Blue]
+    Label     -> [Foreground Red, Underline]
+    Preproc   -> [Foreground Blue, Underline]
+    Function  -> [Foreground Blue, Bold]
+    VarId     -> []
+    ConId     -> [Foreground Blue]
+    CBracket  -> [Foreground Red]
+    Comment   -> [Foreground Gray]
+    Selector  -> [Foreground Blue, Bold]
+    Property  -> [Foreground Green]
+    Tag       -> [Foreground Blue]
+    Entity    -> [Foreground Green]
+    Math      -> [Foreground Green]
+    Alert     -> [Background Aqua]
+    _         -> []
+
+-- | A black and white style.
+monochrome :: Style
+monochrome t =
+  case t of
+    Keyword   -> [Underline]
+    Symbol    -> []
+    String    -> []
+    Char      -> []
+    Number    -> []
+    Regex     -> []
+    Type      -> []
+    Label     -> [Underline]
+    Preproc   -> [Underline]
+    Function  -> [Bold]
+    VarId     -> []
+    ConId     -> []
+    CBracket  -> []
+    Comment   -> [Italic]
+    Selector  -> []
+    Property  -> [Underline]
+    Tag       -> []
+    Entity    -> []
+    Math      -> []
+    Alert     -> [Bold]
+    _         -> []
+
+-- Colors
+
+data Color = Aqua | Black | Blue | Fuchsia | Gray | Green | Lime | Maroon |
+             Navy | Olive | Purple | Red | Silver | Teal | White | Yellow |
+             Hex Integer Color  -- ^ Second argument is a fallback color
+             deriving (Eq, Show, Read)
 
 toANSIColor :: Color -> ANSI.Colour
 toANSIColor c =
@@ -61,66 +127,37 @@ toCSSColor :: Color -> String
 toCSSColor (Hex x _) = '#': printf "%6x" x
 toCSSColor c = map toLower $ show c 
 
-toANSIHighlight :: Styling -> ANSI.Highlight
-toANSIHighlight s =
-  case s of
-    Bold         -> ANSI.Bold
-    Italic       -> ANSI.Italic
-    Underline    -> ANSI.Underscore
-    Fixed        -> ANSI.Normal
-    Foreground c -> ANSI.Foreground $ toANSIColor c
-    Background c -> ANSI.Background $ toANSIColor c
+toLaTeXColor :: Bool    -- ^ Background color?
+             -> Color   -- ^ Color to use
+             -> String  -- ^ String to colorize
+             -> String
+toLaTeXColor background c s =
+  cmd ++ col ++ "{" ++ s ++ "}"
+    where inBr x = "{" ++ x ++ "}"
+          cmd = if background then "\\colorbox" else "\\textcolor"
+          col = case c of
+                 Aqua     -> inBr "Aquamarine"
+                 Lime     -> inBr "LimeGreen"
+                 Navy     -> inBr "NavyBlue"
+                 Olive    -> inBr "OliveGreen"
+                 Silver   -> inBr "Cyan"
+                 Teal     -> inBr "TealBlue"
+                 Hex x _  -> "[rgb]{" ++ hexToRGB x ++ "}"
+                 x        -> inBr (show x)
 
-colorful :: Style
-colorful t =
-  case t of
-    Keyword   -> [Foreground Green, Bold]
-    Symbol    -> []
-    String    -> [Foreground Green]
-    Char      -> [Foreground Red]
-    Number    -> [Foreground Teal]
-    Regex     -> [Foreground Maroon]
-    Type      -> [Foreground Blue]
-    Label     -> [Foreground Red, Underline]
-    Preproc   -> [Foreground Blue, Underline]
-    Function  -> [Foreground Blue, Bold]
-    VarId     -> []
-    ConId     -> [Foreground Blue]
-    CBracket  -> [Foreground Red]
-    Comment   -> [Foreground Gray]
-    Selector  -> [Foreground Blue, Bold]
-    Property  -> [Foreground Green]
-    Tag       -> [Foreground Blue]
-    Entity    -> [Foreground Green]
-    Math      -> [Foreground Green]
-    Alert     -> [Background Aqua]
-    _         -> []
+hexToRGB :: Integer -> String
+hexToRGB x =
+  printf "%0.2f,%0.2f,%0.2f" (toFrac r) (toFrac g) (toFrac b)
+   where r = shiftR x 16 .&. 0xFF
+         g = shiftR x 8 .&. 0xFF
+         b = x .&. 0xFF
 
-monochrome :: Style
-monochrome t =
-  case t of
-    Keyword   -> [Underline]
-    Symbol    -> []
-    String    -> []
-    Char      -> []
-    Number    -> []
-    Regex     -> []
-    Type      -> []
-    Label     -> [Underline]
-    Preproc   -> [Underline]
-    Function  -> [Bold]
-    VarId     -> []
-    ConId     -> []
-    CBracket  -> []
-    Comment   -> [Italic]
-    Selector  -> []
-    Property  -> [Underline]
-    Tag       -> []
-    Entity    -> []
-    Math      -> []
-    Alert     -> [Bold]
-    _         -> []
+toFrac :: Integer -> Double
+toFrac x = fromIntegral x / 256
 
+-- ANSI
+
+-- | Highlight tokens using ANSI control sequences.
 toANSI :: Options -> Tokens -> String
 toANSI opts toks =
   if optNumberLines opts
@@ -134,7 +171,24 @@ toANSI opts toks =
    maxnum = startnum + length source
    tokenToANSI (t,s) = ANSI.highlight (map toANSIHighlight $ optStyle opts t) s
 
--- Use with \usepackage{fancyvrb} \usepackage[usenames,dvipsnames]{color}
+toANSIHighlight :: Styling -> ANSI.Highlight
+toANSIHighlight s =
+  case s of
+    Bold         -> ANSI.Bold
+    Italic       -> ANSI.Italic
+    Underline    -> ANSI.Underscore
+    Fixed        -> ANSI.Normal
+    Foreground c -> ANSI.Foreground $ toANSIColor c
+    Background c -> ANSI.Background $ toANSIColor c
+
+-- LaTeX
+
+-- | Highlight as LaTeX.
+-- Use with
+--
+-- > \usepackage{fancyvrb}
+-- > \usepackage[usenames,dvipsnames]{color}
+--
 toLaTeX :: Options -> Tokens -> String 
 toLaTeX opts toks =
   concat [ "\\begin{Verbatim}[commandchars=\\\\\\{\\}"
@@ -168,31 +222,9 @@ addLaTeXHighlight st x =
     Foreground c -> toLaTeXColor False c x
     Background c -> toLaTeXColor True c x
 
-toLaTeXColor :: Bool -> Color -> String -> String
-toLaTeXColor background c s =
-  cmd ++ col ++ "{" ++ s ++ "}"
-    where inBr x = "{" ++ x ++ "}"
-          cmd = if background then "\\colorbox" else "\\textcolor"
-          col = case c of
-                 Aqua     -> inBr "Aquamarine"
-                 Lime     -> inBr "LimeGreen"
-                 Navy     -> inBr "NavyBlue"
-                 Olive    -> inBr "OliveGreen"
-                 Silver   -> inBr "Cyan"
-                 Teal     -> inBr "TealBlue"
-                 Hex x _  -> "[rgb]{" ++ hexToRGB x ++ "}"
-                 x        -> inBr (show x)
+-- HTML
 
-hexToRGB :: Integer -> String
-hexToRGB x =
-  printf "%0.2f,%0.2f,%0.2f" (toFrac r) (toFrac g) (toFrac b)
-   where r = shiftR x 16 .&. 0xFF
-         g = shiftR x 8 .&. 0xFF
-         b = x .&. 0xFF
-
-toFrac :: Integer -> Double
-toFrac x = fromIntegral x / 256
-
+-- | Highlight as XHTML with CSS classes.
 toXHtmlCSS :: Options -> Tokens -> X.Html
 toXHtmlCSS opts toks = addLineNums source
   where toklist            = F.toList . consolidate $ toks
@@ -214,6 +246,7 @@ toXHtmlCSS opts toks = addLineNums source
                                       [linenumsCell minnum maxnum, mainCell x]
                                 else x
 
+-- | Highlight as XHTML with inline styles.
 toXHtmlInline :: Options -> Tokens -> X.Html
 toXHtmlInline opts toks = addLineNums source
   where toklist            = F.toList . consolidate $ toks
@@ -238,6 +271,7 @@ toXHtmlInline opts toks = addLineNums source
                                       [linenumsCell minnum maxnum, mainCell x]
                                 else x
 
+-- | Highlight as HTML with CSS classes.
 toHtmlCSS :: Options -> Tokens -> H.Html
 toHtmlCSS opts toks = addLineNums source
   where toklist            = F.toList . consolidate $ toks
@@ -259,6 +293,7 @@ toHtmlCSS opts toks = addLineNums source
                                       [linenumsCell minnum maxnum, mainCell x]
                                 else x
 
+-- | Highlight as HTML with inline styles.
 toHtmlInline :: Options -> Tokens -> H.Html
 toHtmlInline opts toks = addLineNums source
   where toklist            = F.toList . consolidate $ toks
@@ -300,6 +335,7 @@ stylingToCSSProperty h =
     Foreground c  -> "color: " ++ toCSSColor c ++ ";"
     Background c  -> "background-color: " ++ toCSSColor c ++ ";"
 
+-- | CSS snippet appropriate for the specificed options.
 cssFor :: Options -> String
 cssFor opts =
  "\n.sourceCode, .lineNumbers { margin: 0; padding: 0; border: 0; \ 
