@@ -12,7 +12,7 @@ To try this out:
     illuminate --help
 
 Right now, illuminate can highlight haskell, literate haskell, cabal,
-alex, c, c++, c#, python, ruby, java, html, rhtml, rxml, xml,
+alex, c, c++, c#, diff, python, ruby, java, html, rhtml, rxml, xml,
 javascript, css, tex, and bibtex. (Note that it handles embedded haskell
 in alex files, embedded javascript and css in html, and embedded ruby in
 rhtml.)

@@ -19,6 +19,7 @@ import qualified Text.Highlighting.Illuminate.Cabal as Cabal
 import qualified Text.Highlighting.Illuminate.CPlusPlus as CPlusPlus
 import qualified Text.Highlighting.Illuminate.CSharp as CSharp
 import qualified Text.Highlighting.Illuminate.CSS as CSS
+import qualified Text.Highlighting.Illuminate.Diff as Diff
 import qualified Text.Highlighting.Illuminate.Haskell as Haskell
 import qualified Text.Highlighting.Illuminate.HTML as HTML
 import qualified Text.Highlighting.Illuminate.Java as Java
@@ -61,6 +62,7 @@ lexers = [ Alex.lexer
          , CPlusPlus.lexer
          , CSharp.lexer
          , CSS.lexer
+         , Diff.lexer
          , Haskell.lexer
          , HTML.lexer
          , Java.lexer

@@ -66,6 +66,8 @@ colorful t =
     Tag       -> [Foreground Blue]
     Entity    -> [Foreground Green]
     Math      -> [Foreground Green]
+    NewFile   -> [Foreground Green]
+    OldFile   -> [Foreground Red]
     Alert     -> [Background Aqua]
     _         -> []
 
@@ -92,6 +94,8 @@ monochrome t =
     Tag       -> []
     Entity    -> []
     Math      -> []
+    NewFile   -> []
+    OldFile   -> []
     Alert     -> [Bold]
     _         -> []
 
@@ -366,6 +370,8 @@ cssFor opts =
                         , Tag
                         , Entity
                         , Math
+                        , NewFile
+                        , OldFile
                         , Alert ]
 
 -- | Collapse adjacent tokens with the same type.

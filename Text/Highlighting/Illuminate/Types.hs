@@ -28,6 +28,8 @@ data TokenType =
   | Tag
   | Entity
   | Math
+  | NewFile
+  | OldFile
   | Alert
   | Plain
   | EOF

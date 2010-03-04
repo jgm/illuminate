@@ -1,7 +1,7 @@
   _ brief instructions for writing a lexer, style, formatter
 
   x rxml
-  _ diff
+  x diff
   _ sh
   _ GNU Make
   _ php
