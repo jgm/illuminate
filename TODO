@@ -1,7 +1,6 @@
   _ brief instructions for writing a lexer, style, formatter
 
-  _ rxml
-  _ erb  (match *.erb, but only if rxhtml and rxml don't match)
+  x rxml
   _ diff
   _ sh
   _ GNU Make
