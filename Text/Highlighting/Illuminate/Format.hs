@@ -23,15 +23,18 @@ import Data.Char (toLower)
 import Data.Bits (shiftR, (.&.))
 import Text.Printf (printf)
 
-data Options = Options { optStyle       :: Style
-                       , optNumberLines :: Bool
-                       , optStartNumber :: Int
-                       }
+data Options = Options {
+          optStyle       :: Style -- ^ Highlighting style
+        , optNumberLines :: Bool  -- ^ Number lines?
+        , optStartNumber :: Int   -- ^ Number of first line
+        , optAnchors     :: Bool  -- ^ Add anchor with number as ID to each line
+        }
 
 defaultOptions :: Options
 defaultOptions = Options { optStyle = colorful
                          , optNumberLines = False
-                         , optStartNumber = 1 }
+                         , optStartNumber = 1
+                         , optAnchors = False }
 
 -- | A Style is a generic instruction for formatting a token of the given
 -- type.  The same style can be used for various output formats (HTML,
@@ -238,12 +241,15 @@ toXHtmlCSS opts toks = addLineNums source
         go (x, s)          = X.thespan X.!
                                 [X.theclass $ show x] X.<< s
         linecount          = sum $ map (length . filter (=='\n') . snd) toklist
-        addPre x           = X.pre X.! [X.theclass "sourceCode"] $ x
+        addPre x           = X.pre X.! [X.theclass "sourceCode"] X.<< x
         minnum             = optStartNumber opts
         maxnum             = minnum + linecount - 1
         linenumsCell x y   = X.td X.! [X.theclass "lineNumbers"] X.<<
-                                 addPre (X.stringToHtml $ unlines
-                                           (map show [x..y]))
+                                 addPre (map mkLinenum [x..y])
+        mkLinenum x        = if optAnchors opts
+                                then X.anchor X.! [X.identifier $ show x] X.<<
+                                        (show x ++ "\n")
+                                else X.stringToHtml (show x ++ "\n")
         mainCell x         = X.td X.! [X.theclass "sourceCode"] X.<< x
         addLineNums x      = if optNumberLines opts
                                 then X.table $ X.tr X.<<
@@ -261,14 +267,17 @@ toXHtmlInline opts toks = addLineNums source
                            else X.thespan X.!
                                  [X.thestyle $ concat styles] X.<< s
         linecount          = sum $ map (length . filter (=='\n') . snd) toklist
-        addPre x           = X.pre X.! [X.thestyle "padding: 0;margin: 0;"] $ x
+        addPre x           = X.pre X.! [X.thestyle "padding: 0;margin: 0;"] X.<< x
         minnum             = optStartNumber opts
         maxnum             = minnum + linecount - 1
         linenumstyle       = "text-align:right;border-right: 1px solid gray;" ++
                              "padding: 0 5px 0 5px;vertical-align: baseline;"
-        linenumsCell x y   = X.td X.!  [X.thestyle linenumstyle] X.<<
-                                 addPre (X.stringToHtml $ unlines
-                                          (map show [x..y]))
+        linenumsCell x y   = X.td X.! [X.thestyle linenumstyle] X.<<
+                                 addPre (map mkLinenum [x..y])
+        mkLinenum x        = if optAnchors opts
+                                then X.anchor X.! [X.identifier $ show x] X.<<
+                                        (show x ++ "\n")
+                                else X.stringToHtml (show x ++ "\n")
         mainCell x         = X.td X.! [X.thestyle "padding: 0 5px 0 5px;"] X.<< x
         addLineNums x      = if optNumberLines opts
                                 then X.table $ X.tr X.<<
@@ -285,12 +294,15 @@ toHtmlCSS opts toks = addLineNums source
         go (x, s)          = H.thespan H.!
                                 [H.theclass $ show x] H.<< s
         linecount          = sum $ map (length . filter (=='\n') . snd) toklist
-        addPre x           = H.pre H.! [H.theclass "sourceCode"] $ x
+        addPre x           = H.pre H.! [H.theclass "sourceCode"] H.<< x
         minnum             = optStartNumber opts
         maxnum             = minnum + linecount - 1
         linenumsCell x y   = H.td H.! [H.theclass "lineNumbers"] H.<<
-                                 addPre (H.stringToHtml $ unlines
-                                            (map show [x..y]))
+                                 addPre (map mkLinenum [x..y])
+        mkLinenum x        = if optAnchors opts
+                                then H.anchor H.! [H.identifier $ show x] H.<<
+                                        (show x ++ "\n")
+                                else H.stringToHtml (show x ++ "\n")
         mainCell x         = H.td H.! [H.theclass "sourceCode"] H.<< x
         addLineNums x      = if optNumberLines opts
                                 then H.table $ H.tr H.<<
@@ -305,14 +317,17 @@ toHtmlInline opts toks = addLineNums source
         go (t, s)          = foldl (flip ($)) (H.stringToHtml s)
                                 (map stylingToHtmlTag $ optStyle opts t)
         linecount          = sum $ map (length . filter (=='\n') . snd) toklist
-        addPre x           = H.pre H.! [H.thestyle "padding: 0;margin: 0;"] $ x
+        addPre x           = H.pre H.! [H.thestyle "padding: 0;margin: 0;"] H.<< x
         minnum             = optStartNumber opts
         maxnum             = minnum + linecount - 1
         linenumstyle       = "text-align:right;border-right: 1px solid gray;" ++
                              "padding: 0 5px 0 5px;vertical-align: baseline;"
-        linenumsCell x y   = H.td H.!  [H.thestyle linenumstyle] H.<<
-                                 addPre (H.stringToHtml $ unlines
-                                          (map show [x..y]))
+        linenumsCell x y   = H.td H.! [H.thestyle linenumstyle] H.<<
+                                 addPre (map mkLinenum [x..y])
+        mkLinenum x        = if optAnchors opts
+                                then H.anchor H.! [H.identifier $ show x] H.<<
+                                        (show x ++ "\n")
+                                else H.stringToHtml (show x ++ "\n")
         mainCell x         = H.td H.! [H.thestyle "padding: 0 5px 0 5px;"] H.<< x
         addLineNums x      = if optNumberLines opts
                                 then H.table $ H.tr H.<<

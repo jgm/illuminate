@@ -123,7 +123,8 @@ main = do
 
   let options = defaultOptions { optStyle = style
                                , optNumberLines = numberlines
-                               , optStartNumber = startnum }
+                               , optStartNumber = startnum
+                               , optAnchors = numberlines }
 
   let inHtml includes x = if fragment
                              then foldr (H.renderHtml' 0) "" (H.getHtmlElements x)
