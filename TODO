@@ -17,7 +17,7 @@
   _ clojure
   _ commonlisp
   _ sql
-  _ d
+  x d
   _ objectivec
   _ smalltalk
   _ prolog

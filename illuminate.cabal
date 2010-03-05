@@ -23,6 +23,7 @@ Extra-Source-Files:  default.css
                      Text/Highlighting/Illuminate/CPlusPlus.x
                      Text/Highlighting/Illuminate/CSharp.x
                      Text/Highlighting/Illuminate/CSS.x
+                     Text/Highlighting/Illuminate/D.x
                      Text/Highlighting/Illuminate/Diff.x
                      Text/Highlighting/Illuminate/Haskell.x
                      Text/Highlighting/Illuminate/HTML.x
@@ -56,6 +57,7 @@ Library
                      Text.Highlighting.Illuminate.CPlusPlus
                      Text.Highlighting.Illuminate.CSharp
                      Text.Highlighting.Illuminate.CSS
+                     Text.Highlighting.Illuminate.D
                      Text.Highlighting.Illuminate.Diff
                      Text.Highlighting.Illuminate.Haskell
                      Text.Highlighting.Illuminate.HTML
@@ -81,6 +83,7 @@ Executable illuminate
                      Text.Highlighting.Illuminate.CPlusPlus
                      Text.Highlighting.Illuminate.CSharp
                      Text.Highlighting.Illuminate.CSS
+                     Text.Highlighting.Illuminate.D
                      Text.Highlighting.Illuminate.Diff
                      Text.Highlighting.Illuminate.Haskell
                      Text.Highlighting.Illuminate.HTML
