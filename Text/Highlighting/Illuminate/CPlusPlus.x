@@ -38,7 +38,8 @@ $hexdigit = [$digit A-F a-f]
 @keyword = @ckeyword | @cppkeyword
 
 @alert = (TODO|FIXME|BUG)[\:]?
-@type = ("bool|char|double|float|int|long"|"short|signed|unsigned|void|wchar_t")
+@type = ("bool"|"char"|"double"|"float"|"int"|"long"|
+         "short"|"signed"|"unsigned"|"void"|"wchar_t")
 @string = \" ([^ \" \\] | \\ .)* \" 
 @char   = \' ([^ \' \\] | \\ .)* \'
 
