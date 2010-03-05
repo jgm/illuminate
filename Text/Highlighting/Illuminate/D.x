@@ -48,6 +48,7 @@ tokens :-
 
 <multilinecomment> {
   "+/"   { tok Comment ==> popContext }
+  "/+"   { tok Comment ==> pushContext  (multilinecomment, Comment) }
   @alert { tok Alert }
 }
 
