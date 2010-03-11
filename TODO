@@ -2,7 +2,7 @@
 
   x rxml
   x diff
-  _ sh (started - needs testing, esp. on $vars)
+  x sh
   _ GNU Make
   _ php
   _ perl
