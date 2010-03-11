@@ -34,6 +34,7 @@ Extra-Source-Files:  default.css
                      Text/Highlighting/Illuminate/RHTML.x
                      Text/Highlighting/Illuminate/RXML.x
                      Text/Highlighting/Illuminate/Ruby.x
+                     Text/Highlighting/Illuminate/Sh.x
                      Text/Highlighting/Illuminate/TeX.x
                      Text/Highlighting/Illuminate/XML.x
                      alex/AlexWrapper-illuminate
@@ -68,6 +69,7 @@ Library
                      Text.Highlighting.Illuminate.RHTML
                      Text.Highlighting.Illuminate.RXML
                      Text.Highlighting.Illuminate.Ruby
+                     Text.Highlighting.Illuminate.Sh
                      Text.Highlighting.Illuminate.TeX
                      Text.Highlighting.Illuminate.XML
   Ghc-Options:       -Wall -funbox-strict-fields
@@ -94,6 +96,7 @@ Executable illuminate
                      Text.Highlighting.Illuminate.RHTML
                      Text.Highlighting.Illuminate.RXML
                      Text.Highlighting.Illuminate.Ruby
+                     Text.Highlighting.Illuminate.Sh
                      Text.Highlighting.Illuminate.TeX
                      Text.Highlighting.Illuminate.XML
   Build-Tools:       alex >= 2 && < 3
