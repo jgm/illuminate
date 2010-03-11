@@ -57,6 +57,6 @@ tokens :-
 lexer :: Lexer
 lexer = Lexer { name = "Sh"
               , aliases = ["sh","bash"]
-              , filenames = ["*.sh", "*.bash"]
+              , filenames = ["*.sh", "*.bash", ".profile", ".bashrc", ".zshrc"]
               , scan = scanner }
 }
