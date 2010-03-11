@@ -19,6 +19,7 @@ data TokenType =
   | Label
   | Preproc
   | Function
+  | Variable
   | VarId
   | ConId
   | CBracket

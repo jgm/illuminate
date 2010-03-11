@@ -60,6 +60,7 @@ colorful t =
     Label     -> [Foreground Red, Underline]
     Preproc   -> [Foreground Blue, Underline]
     Function  -> [Foreground Blue, Bold]
+    Variable  -> [Foreground Maroon]
     VarId     -> []
     ConId     -> [Foreground Blue]
     CBracket  -> [Foreground Red]
@@ -88,6 +89,7 @@ monochrome t =
     Label     -> [Underline]
     Preproc   -> [Underline]
     Function  -> [Bold]
+    Variable  -> []
     VarId     -> []
     ConId     -> []
     CBracket  -> []
@@ -376,6 +378,7 @@ cssFor opts =
                         , Label
                         , Preproc
                         , Function
+                        , Variable
                         , VarId
                         , ConId
                         , CBracket
