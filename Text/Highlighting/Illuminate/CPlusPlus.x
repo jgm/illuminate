@@ -92,7 +92,7 @@ tokens :-
 lexer :: Lexer
 lexer = Lexer { name = "C++"
               , aliases = ["c++","cplusplus","cpp"]
-              , filenames = ["*.cpp"]
+              , filenames = ["*.cpp","*.cc"]
               , scan = scanner }
 }
 
