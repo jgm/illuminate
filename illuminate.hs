@@ -117,6 +117,7 @@ main = do
 
   style <- case getStyle opts of
                  "colorful"   -> return colorful
+                 "hscolour"   -> return hscolour
                  "monochrome" -> return monochrome
                  x            -> hPutStrLn stderr ("Unknown style `" ++ x ++ "'") >>
                                  exitWith (ExitFailure 3)

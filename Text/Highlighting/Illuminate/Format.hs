@@ -5,6 +5,7 @@ module Text.Highlighting.Illuminate.Format
            , Styling(..)
            , Color(..)
            , colorful
+           , hscolour
            , monochrome
            , toANSI
            , toLaTeX
@@ -67,6 +68,35 @@ colorful t =
     Comment   -> [Foreground Gray]
     Selector  -> [Foreground Blue, Bold]
     Property  -> [Foreground Green]
+    Tag       -> [Foreground Blue]
+    Entity    -> [Foreground Green]
+    Math      -> [Foreground Green]
+    NewFile   -> [Foreground Green]
+    OldFile   -> [Foreground Red]
+    Alert     -> [Background Aqua]
+    _         -> []
+
+-- | A style based on hscolour.
+hscolour :: Style
+hscolour t =
+  case t of
+    Keyword   -> [Foreground Green, Underline]
+    Symbol    -> []
+    String    -> [Foreground Fuchsia]
+    Char      -> [Foreground Fuchsia]
+    Number    -> [Foreground Fuchsia]
+    Regex     -> [Foreground Fuchsia]
+    Type      -> []
+    Label     -> [Foreground Red, Underline]
+    Preproc   -> [Foreground Blue, Underline]
+    Function  -> [Foreground Blue]
+    Variable  -> []
+    VarId     -> []
+    ConId     -> []
+    CBracket  -> []
+    Comment   -> [Foreground Gray]
+    Selector  -> [Foreground Green, Underline]
+    Property  -> [Foreground Blue]
     Tag       -> [Foreground Blue]
     Entity    -> [Foreground Green]
     Math      -> [Foreground Green]
