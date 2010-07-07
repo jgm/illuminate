@@ -58,7 +58,8 @@ $cntrl   = [$large \@\[\\\]\^\_]
 $charesc = [abfnrtv\\\"\'\&]
 @escape  = \\ ($charesc | @ascii | @decimal | o @octal | x @hexadecimal)
 @gap     = \\ $white+ \\
-@string  = $graphic # [\"\\] | " " | [\t] | @gap | @escape
+@stringchar  = $graphic # [\"\\] | " " | [\t] | @gap | @escape
+@string  = \" @stringchar* \"
 
 @alert = (TODO|FIXME|BUG)[\:]?
 
@@ -85,7 +86,7 @@ tokens :-
 <include> {
   $white+       { tok Whitespace }
   \< [^ \>]* \> { tok String ==> popContext }
-  \" @string* \" { tok String ==> popContext }
+  @string       { tok String ==> popContext }
 }
 
 <code,comment> "{-"  { tok Comment ==> pushContext  (comment, Comment) }
@@ -121,7 +122,7 @@ tokens :-
 
  \' ($graphic # [\'\\] | " " | @escape) \' { tok Char }
 
- \" @string* \"    { tok String }
+ @string*   { tok String }
 }
 
 <bird> {

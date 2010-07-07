@@ -46,7 +46,7 @@ tokens :-
 <include> {
   $white+       { tok Whitespace }
   \< [^ \>]* \> { tok String ==> popContext }
-  \" @string \" { tok String ==> popContext }
+  @string       { tok String ==> popContext }
 }
 
 <0> @endscripttag  { tok EOF }

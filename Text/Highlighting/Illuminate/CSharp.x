@@ -44,7 +44,7 @@ $hexdigit = [$digit A-F a-f]
  "short"|"ushort"|"string"|"void")
 
 @alert = (TODO|FIXME|BUG)[\:]?
-@string = \" ([^ \" \\] | \\ .)* \" 
+@string = \" ([^ \" \\] | \\ .)* \"
 @char   = \' ([^ \' \\] | \\ .)* \'
 
 tokens :-
@@ -67,7 +67,7 @@ tokens :-
 <include> {
   $white+       { tok Whitespace }
   \< [^ \>]* \> { tok String ==> popContext }
-  \" @string \" { tok String ==> popContext }
+  @string       { tok String ==> popContext }
 }
 
 <0> {
