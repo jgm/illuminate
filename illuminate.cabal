@@ -1,6 +1,6 @@
 Name:                illuminate
 Version:             0.1
-Cabal-Version:       >= 1.2
+Cabal-Version:       >= 1.6
 Build-Type:          Custom
 Category:            Text
 Synopsis:            A fast syntax highlighting library built with alex. 
@@ -74,6 +74,10 @@ Library
                      Text.Highlighting.Illuminate.XML
   Ghc-Options:       -Wall -funbox-strict-fields
   Ghc-Prof-Options:  -auto-all -caf-all -O0
+
+Source-repository head
+  type:          git
+  location:      git://github.com/jgm/illuminate.git
 
 Executable illuminate
   Main-Is:           illuminate.hs
