@@ -46,7 +46,7 @@ Flag executable
 
 Library
   Build-Depends:     base >= 3 && < 5, containers, xhtml, html, utf8-string,
-                     hscolour, FileManip, filepath
+                     hscolour, filemanip, filepath
   Build-Tools:       alex >= 2 && < 3
   Exposed-Modules:   Text.Highlighting.Illuminate
                      Text.Highlighting.Illuminate.Types
