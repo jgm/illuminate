@@ -15,8 +15,7 @@ License-file:        LICENSE
 Author:              John MacFarlane
 Maintainer:          jgm@berkeley.edu
 Homepage:            http://github.com/jgm/illuminate
-Extra-Source-Files:  default.css
-                     Text/Highlighting/Illuminate/Alex.x
+Extra-Source-Files:  Text/Highlighting/Illuminate/Alex.x
                      Text/Highlighting/Illuminate/BibTeX.x
                      Text/Highlighting/Illuminate/C.x
                      Text/Highlighting/Illuminate/Cabal.x
