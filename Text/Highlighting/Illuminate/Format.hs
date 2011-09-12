@@ -207,7 +207,7 @@ toANSI opts toks =
    fmtNumber = printf ("%" ++ (show . length . show $ maxnum) ++ "d ")
    startnum = optStartNumber opts
    source = F.concatMap tokenToANSI . consolidate $ toks
-   maxnum = startnum + length source
+   maxnum = startnum + length (lines source)
    tokenToANSI (t,s) = ANSI.highlight (map toANSIHighlight $ optStyle opts t) s
 
 toANSIHighlight :: Styling -> ANSI.Highlight
