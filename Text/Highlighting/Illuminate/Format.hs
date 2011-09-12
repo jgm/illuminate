@@ -272,7 +272,7 @@ toXHtmlCSS opts toks = addLineNums source
         go (Plain, s)      = X.stringToHtml s
         go (x, s)          = X.thespan X.!
                                 [X.theclass $ show x] X.<< s
-        linecount          = sum $ map (length . filter (=='\n') . snd) toklist
+        linecount          = length . lines . concatMap snd $ toklist
         addPre x           = X.pre X.! [X.theclass "sourceCode"] X.<< x
         minnum             = optStartNumber opts
         maxnum             = minnum + linecount - 1
@@ -298,7 +298,7 @@ toXHtmlInline opts toks = addLineNums source
                            then X.stringToHtml s
                            else X.thespan X.!
                                  [X.thestyle $ concat styles] X.<< s
-        linecount          = sum $ map (length . filter (=='\n') . snd) toklist
+        linecount          = length . lines . concatMap snd $ toklist
         addPre x           = X.pre X.! [X.thestyle "padding: 0;margin: 0;"] X.<< x
         minnum             = optStartNumber opts
         maxnum             = minnum + linecount - 1
@@ -325,7 +325,7 @@ toHtmlCSS opts toks = addLineNums source
         go (Plain, s)      = H.stringToHtml s
         go (x, s)          = H.thespan H.!
                                 [H.theclass $ show x] H.<< s
-        linecount          = sum $ map (length . filter (=='\n') . snd) toklist
+        linecount          = length . lines . concatMap snd $ toklist
         addPre x           = H.pre H.! [H.theclass "sourceCode"] H.<< x
         minnum             = optStartNumber opts
         maxnum             = minnum + linecount - 1
@@ -348,7 +348,7 @@ toHtmlInline opts toks = addLineNums source
         source             = addPre $ H.concatHtml $ map go toklist
         go (t, s)          = foldl (flip ($)) (H.stringToHtml s)
                                 (map stylingToHtmlTag $ optStyle opts t)
-        linecount          = sum $ map (length . filter (=='\n') . snd) toklist
+        linecount          = length . lines . concatMap snd $ toklist
         addPre x           = H.pre H.! [H.thestyle "padding: 0;margin: 0;"] H.<< x
         minnum             = optStartNumber opts
         maxnum             = minnum + linecount - 1
